@@ -3,11 +3,15 @@ name: Stable Release
 on:
   push:
     tags:
-      - 'v*.*.*'   # e.g., v1.3.0 – no pre-release identifiers
+      - 'v*.*.*'   # z.B. v1.0.0 – keine Beta-Zeichen
 
 jobs:
-  release:
+  publish:
+    name: Publish Stable Release
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/core
 
     steps:
       - name: Checkout code
@@ -19,13 +23,21 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Enable pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
-      - name: Publish to npm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Publish to npm (latest)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --tag latest
+        run: pnpm publish --access public --tag latest
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

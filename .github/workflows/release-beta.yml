@@ -3,11 +3,15 @@ name: Beta Release
 on:
   push:
     tags:
-      - 'v*-beta*'   # e.g., v1.4.0-beta.1
+      - 'v*-beta*'   # z.B. v1.1.0-beta, v1.2.0-beta.1
 
 jobs:
-  beta-release:
+  publish-beta:
+    name: Publish Beta Release
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/core
 
     steps:
       - name: Checkout code
@@ -19,13 +23,21 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Enable pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
-      - name: Publish to npm with beta tag
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Publish to npm (beta)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --tag beta
+        run: pnpm publish --access public --tag beta
 
       - name: Create Beta GitHub Release
         uses: softprops/action-gh-release@v1

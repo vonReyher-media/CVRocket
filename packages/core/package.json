@@ -1,6 +1,6 @@
 {
   "name": "@cvrocket/core",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -42,5 +42,8 @@
     "typescript": "^5.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
