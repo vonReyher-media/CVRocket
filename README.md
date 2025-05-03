@@ -3,9 +3,9 @@
 ### The Developer-Centric Open Source Form Builder for High-Conversion Experiences
 
 
-[![GitHub Stars](https://img.shields.io/github/stars/cvrocket/cvrocket.svg?style=social)](https://github.com/cvrocket/cvrocket/stargazers)
-[![Watchers](https://img.shields.io/github/watchers/cvrocket/cvrocket.svg?style=social)](https://github.com/cvrocket/cvrocket/watchers)
-[![Forks](https://img.shields.io/github/forks/cvrocket/cvrocket.svg?style=social)](https://github.com/cvrocket/cvrocket/network/members)
+[![GitHub Stars](https://img.shields.io/github/stars/vonReyher-media/CVRocket.svg?style=social)](https://github.com/vonReyher-media/CVRocket/stargazers)
+[![Watchers](https://img.shields.io/github/watchers/vonReyher-media/CVRocket.svg?style=social)](https://github.com/vonReyher-media/CVRocket/watchers)
+[![Forks](https://img.shields.io/github/forks/vonReyher-media/CVRocket.svg?style=social)](https://github.com/vonReyher-media/CVRocket/network/members)
 
 
 CVRocket is a powerful, modular, developer-first form builder built with React. It's open-source, designed for conversion, and gives you complete control—ideal for high-impact use cases like lead generation, onboarding flows, product quizzes, and dynamic surveys.
@@ -166,9 +166,9 @@ We welcome feedback and discussion. Join the [Discord](https://discord.gg/cvrock
 
 ## 🧑‍💻 Contributing
 
-[![Open Issues](https://img.shields.io/github/issues/cvrocket/cvrocket)](https://github.com/cvrocket/cvrocket/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/cvrocket/cvrocket)](https://github.com/cvrocket/cvrocket/pulls)
-[![Last Commit](https://img.shields.io/github/last-commit/cvrocket/cvrocket)](https://github.com/cvrocket/cvrocket)
+[![Open Issues](https://img.shields.io/github/issues/vonReyher-media/CVRocket)](https://github.com/vonReyher-media/CVRocket/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/vonReyher-media/CVRocket)](https://github.com/vonReyher-media/CVRocket/pulls)
+[![Last Commit](https://img.shields.io/github/last-commit/vonReyher-media/CVRocket)](https://github.com/vonReyher-media/CVRocket/cvrocket)
 
 We welcome contributors of all levels. You can help by:
 
