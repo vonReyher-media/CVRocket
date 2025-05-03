@@ -1,0 +1,45 @@
+name: Stable Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'   # z.B. v1.0.0 – keine Beta-Zeichen
+
+jobs:
+  publish:
+    name: Publish Stable Release
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/core
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Enable pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Publish to npm (latest)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --access public --tag latest
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
