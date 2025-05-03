@@ -1,0 +1,46 @@
+{
+  "name": "@cvrocket/core",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && postcss src/index.css -o dist/style.css",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "clsx": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-hook-form": "^7.56.0",
+    "zod": "^3.24.0",
+    "framer-motion": "^10.16.0",
+    "@motionone/dom": "^10.18.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^3.2.0",
+    "class-variance-authority": "^0.7.0",
+    "lucide-react": "^0.503.0",
+    "@hookform/resolvers": "^5.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  }
+}

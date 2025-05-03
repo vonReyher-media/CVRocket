@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@cvrocket/core": ["./src"]
+    },
+    "jsx": "react-jsx",
+    "types": ["react", "node"]
+  },
+  "include": ["src"]
+}

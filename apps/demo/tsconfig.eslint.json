@@ -1,0 +1,5 @@
+// apps/demo/tsconfig.eslint.json
+{
+  "extends": "./tsconfig.json",
+  "include": ["src"]
+}
