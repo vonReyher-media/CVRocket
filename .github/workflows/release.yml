@@ -3,15 +3,12 @@ name: Stable Release
 on:
   push:
     tags:
-      - 'v*.*.*'   # z.B. v1.0.0 – keine Beta-Zeichen
+      - 'v*.*.*'  # z. B. v1.0.0 – ohne "-beta"
 
 jobs:
   publish:
-    name: Publish Stable Release
+    name: Publish @cvrocket/core (latest)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/core
 
     steps:
       - name: Checkout code
@@ -23,18 +20,20 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Enable pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Install dependencies
+      - name: Install dependencies (workspace root)
         run: pnpm install --frozen-lockfile
 
       - name: Build package
+        working-directory: packages/core
         run: pnpm build
 
       - name: Publish to npm (latest)
+        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public --tag latest

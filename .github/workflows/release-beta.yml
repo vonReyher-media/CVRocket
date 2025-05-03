@@ -7,11 +7,8 @@ on:
 
 jobs:
   publish-beta:
-    name: Publish Beta Release
+    name: Publish @cvrocket/core (beta)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/core
 
     steps:
       - name: Checkout code
@@ -23,18 +20,20 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Enable pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Install dependencies
+      - name: Install dependencies (workspace root)
         run: pnpm install --frozen-lockfile
 
       - name: Build package
+        working-directory: packages/core
         run: pnpm build
 
       - name: Publish to npm (beta)
+        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public --tag beta
