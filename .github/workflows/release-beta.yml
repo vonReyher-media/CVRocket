@@ -54,11 +54,11 @@ jobs:
 
 
       - name: Build package
-        working-directory: packages/core
+        working-directory:  ${{ github.workspace }}/packages/core
         run: pnpm build
 
       - name: Publish to npm (beta)
-        working-directory: packages/core
+        working-directory:  ${{ github.workspace }}/packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public --tag beta --no-git-checks || echo "Already published"
