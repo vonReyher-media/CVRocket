@@ -55,7 +55,7 @@ jobs:
 
       - name: Build package
         working-directory:  ${{ github.workspace }}/packages/core
-        run: pnpm build
+        run: pnpm run build
 
       - name: Publish to npm (beta)
         working-directory:  ${{ github.workspace }}/packages/core
