@@ -31,6 +31,9 @@ jobs:
         with:
           version: 8
 
+      - name: Tree all files
+        run: pnpm recursive exec -- ls -la
+
       - name: Install dependencies (workspace root)
         run: pnpm install --frozen-lockfile
 
