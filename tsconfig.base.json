@@ -31,7 +31,7 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "@cvrocket/core": ["packages/core/src"]
+      "@vonreyher-media/cvrocket": ["packages/core/src"]
     }
   }
 }

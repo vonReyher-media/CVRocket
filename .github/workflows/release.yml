@@ -15,6 +15,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          path: 'cvrocket'
+
+      - name: Show directory structure
+        run: tree -a -I 'node_modules|.git'
+        working-directory: ${{ github.workspace }}/cvrocket
 
       - name: Extract tag
         id: get_tag
@@ -29,26 +35,40 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9
 
-      - name: Install dependencies (workspace root)
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies (cvrocket)
         run: pnpm install --frozen-lockfile
+        working-directory: ${{ github.workspace }}/cvrocket
 
       - name: Build package
-        working-directory: packages/core
-        run: pnpm build
+        working-directory: ${{ github.workspace }}/cvrocket/packages/core
+        run: pnpm run build
 
       - name: Publish to npm (latest)
-        working-directory: packages/core
+        working-directory: ${{ github.workspace }}/cvrocket/packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --access public --tag latest
+        run: pnpm publish --access public --tag latest --no-git-checks || echo "Already published"
 
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: build-and-publish
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: 'cvrocket'
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:

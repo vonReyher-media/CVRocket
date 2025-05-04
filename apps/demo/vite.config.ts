@@ -8,7 +8,10 @@ export default defineConfig({
   resolve: {
     alias: {
       // ✅ Local alias to the core source code
-      '@cvrocket/core': path.resolve(__dirname, '../../packages/core/src'),
+      '@vonreyher-media/cvrocket': path.resolve(
+        __dirname,
+        '../../packages/core/src',
+      ),
     },
   },
 });

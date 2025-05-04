@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@cvrocket/core": ["./src"],
+      "@vonreyher-media/cvrocket": ["./src"],
       "react": ["./node_modules/@types/react"]
     },
     "jsx": "react-jsx",

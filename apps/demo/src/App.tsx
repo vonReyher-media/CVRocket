@@ -12,7 +12,7 @@ import {
   UniversalInputField,
   UniversalSelectField,
   UniversalTextareaField,
-} from '@cvrocket/core';
+} from '@vonreyher-media/cvrocket';
 
 import z from 'zod';
 import { CommandIcon } from 'lucide-react';
