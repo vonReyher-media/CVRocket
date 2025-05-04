@@ -13,10 +13,16 @@ jobs:
       tag: ${{ steps.get_tag.outputs.tag }}
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           path: 'cvrocket'
+
+
+      - name: Show directory structure
+        run: tree -a -I 'node_modules|.git'
+        working-directory: ${{ github.workspace }}
 
       - name: Extract tag
         id: get_tag
