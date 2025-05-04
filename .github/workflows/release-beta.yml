@@ -49,7 +49,7 @@ jobs:
       
 
       - name: Install dependencies (cvrocket)
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
         working-directory: ${{ github.workspace }}/cvrocket
 
 
