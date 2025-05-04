@@ -1,13 +1,11 @@
-/* eslint-env node */
-/* global module, process */
+import process from 'node:process';
 
-// postcss.config.js
-module.exports = {
+export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    "@tailwindcss/postcss": {},
     ...(process.env.NODE_ENV === 'production'
       ? { cssnano: { preset: 'default' } }
       : {}),
   },
 };
+
