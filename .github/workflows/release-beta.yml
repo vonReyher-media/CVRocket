@@ -22,6 +22,8 @@ jobs:
 
       - name: Show directory structure
         run: tree -a -I 'node_modules|.git'
+        with:
+            working-directory: ${{ github.workspace }}/cvrocket
 
       - name: Extract tag
         id: get_tag
@@ -49,7 +51,7 @@ jobs:
 
       - name: Install dependencies (cvrocket)
         run: pnpm install --frozen-lockfile
-        working-directory: cvrocket
+        working-directory: ${{ github.workspace }}/cvrocket
 
 
       - name: Build package
