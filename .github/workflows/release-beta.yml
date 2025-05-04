@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: '.'
+          path: 'cvrocket'
 
       - name: Extract tag
         id: get_tag
