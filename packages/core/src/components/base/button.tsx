@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { Loader2Icon } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 
 import { VariantProps } from '../../types.ts';
@@ -49,9 +49,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading}
         {...props}
       >
-        {isLoading ? (
-          <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-        ) : null}
+        {isLoading ? <LoaderCircle className="mr-4 size-3" /> : null}
         {children}
       </button>
     );

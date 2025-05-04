@@ -32,7 +32,7 @@ jobs:
           version: 8
 
       - name: Install dependencies (workspace root)
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build package
         working-directory: packages/core
