@@ -1,7 +1,5 @@
-import React, { useCallback } from 'react';
-
 import { animate } from '@motionone/dom';
-import { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 interface ToastProps {
   message: string;
@@ -20,7 +18,7 @@ export const Toast: React.FC<ToastProps> = ({
   visible,
 }) => {
   const toastRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<number>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const animatingRef = useRef(false);
 
   const dismissToast = useCallback(() => {
@@ -29,7 +27,6 @@ export const Toast: React.FC<ToastProps> = ({
     }
   }, [id, onClose]);
 
-  // Handle mount animation
   useEffect(() => {
     if (toastRef.current && visible) {
       animate(
@@ -41,35 +38,27 @@ export const Toast: React.FC<ToastProps> = ({
         },
       );
 
-      // Auto-dismiss after 4 seconds
       timerRef.current = setTimeout(() => {
         dismissToast();
       }, 4000);
 
       return () => {
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-        }
+        if (timerRef.current) clearTimeout(timerRef.current);
       };
     }
-  }, [dismissToast, toastRef, visible]);
+  }, [dismissToast, visible]);
 
-  // Handle unmount animation when visible changes to false
   useEffect(() => {
     if (!visible && toastRef.current && !animatingRef.current) {
       animatingRef.current = true;
 
-      // Clear the timeout to prevent double-dismissal
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
 
       animate(
         toastRef.current,
         { opacity: [1, 0], y: [0, 20] },
         { duration: 0.2, easing: [0.22, 1, 0.36, 1] },
       ).finished.then(() => {
-        // Only remove from DOM after animation completes
         onRemove(id);
         animatingRef.current = false;
       });
@@ -79,7 +68,7 @@ export const Toast: React.FC<ToastProps> = ({
   return (
     <div
       ref={toastRef}
-      onClick={() => dismissToast()}
+      onClick={dismissToast}
       className="pointer-events-auto flex items-center gap-3 rounded-lg bg-white dark:bg-gray-800 px-4 py-3 shadow-lg border border-gray-200 dark:border-gray-700 w-full max-w-md"
       role="alert"
       aria-live="polite"

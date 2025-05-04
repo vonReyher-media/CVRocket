@@ -1,5 +1,5 @@
 // base/select.tsx
-import * as React from 'react';
+import React from 'react';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;

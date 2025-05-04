@@ -1,6 +1,5 @@
-import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
 import { animate } from '@motionone/dom';
+import React, { useEffect, useRef, useState } from 'react';
 
 export interface EnhancedSliderProps {
   min: number;

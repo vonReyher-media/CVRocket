@@ -1,13 +1,14 @@
 import {
-  useState,
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
-  type ReactNode,
+  useState,
 } from 'react';
+
+import { cn } from '../../../../utils/utils';
 import { useCVRocket } from '../../../providers/CVRocketProvider';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
-import { cn } from '../../../../utils/utils';
 
 interface SelectionContextType {
   selectedValues: Set<string>;
@@ -64,8 +65,10 @@ export function MultiSelectPage({
 
   useEffect(() => {
     const storedData = data[datakey];
-    if (storedData) {
+    if (Array.isArray(storedData)) {
       setSelectedValues(new Set(storedData));
+    } else {
+      setSelectedValues(new Set());
     }
   }, [datakey, data]);
 

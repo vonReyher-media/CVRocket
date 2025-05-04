@@ -1,23 +1,37 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  ReactNode,
-} from 'react';
-import { ButtonFooter } from '../components/buttonFooter';
-import { CheckAvailableToastProvider } from './ToastProvider';
-import { useProtectedStepNavigation } from '../hooks';
-import { usePersistentCVRocket } from '../hooks';
-
 /**
- * Type representing the shape of form data.
+ * CVRocketProvider – central form provider with step management,
+ * context access, validation, persistence, and protected navigation.
+ *
+ * Features:
+ * - Configurable step-based form system
+ * - Context-based navigation & data management
+ * - Event-based step handling
+ * - Optional terms checkbox integration
+ * - Supports persistent storage & Thank You page
+ * - Auto-navigation & button footer integration
  */
+
+import React, {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import { ButtonFooter } from '../components/buttonFooter';
+import { usePersistentCVRocket, useProtectedStepNavigation } from '../hooks';
+import { CheckAvailableToastProvider } from './ToastProvider';
+
+/** Shape of form data object */
 type FormData = Record<string, unknown>;
 
-/**
- * Configuration for a specific step/page in the form.
- */
+/** Configuration per page/step */
 export interface PageConfig {
   isFormValid: boolean;
   agbRequired: boolean;
@@ -27,32 +41,24 @@ export interface PageConfig {
   goToPreviousStep?: () => Promise<void>;
 }
 
-/**
- * Typed event map used for event-based communication within the form.
- */
+/** Internal event names & payloads */
 type EventMap = {
   next_step: FormData;
   previous_step: void;
 };
 
-/**
- * Callback invoked when emitting an event.
- */
+/** Signature for event callback */
 type EventCallback<K extends keyof EventMap> = (
   payload: EventMap[K],
 ) => void | Promise<void>;
 
-/**
- * Function signature for emitting a typed event.
- */
+/** Typed event emitter function */
 type EventHandler = <K extends keyof EventMap>(
   event: K,
   payload: EventMap[K],
 ) => void;
 
-/**
- * Props required to initialize the CVRocketProvider.
- */
+/** Props for the CVRocketProvider */
 interface CVRocketProviderProps {
   children: ReactNode;
   onComplete: (data: FormData) => void | Promise<void>;
@@ -67,9 +73,7 @@ interface CVRocketProviderProps {
   storageKey?: string;
 }
 
-/**
- * Context value shared throughout the form.
- */
+/** Context value available via useCVRocket */
 interface CVRocketContextValue {
   currentStep: number;
   totalSteps: number;
@@ -107,42 +111,37 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   const [pageConfigs, setPageConfigs] = useState<PageConfig[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const totalSteps = React.Children.count(children);
+  const totalSteps = Children.count(children);
 
-  const eventListeners: {
-    [K in keyof EventMap]?: EventCallback<K>[];
-  } = {};
+  type GenericListenerMap = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: EventCallback<any>[]; // TODO: replace with a more specific type
+  };
+
+  const eventListenersRef = useRef<GenericListenerMap>({});
 
   const updateFormData = (newData: FormData) => {
     setData((prev) => ({ ...prev, ...newData }));
   };
 
   const emit: EventHandler = (event, payload) => {
-    eventListeners[event]?.forEach((listener) => {
+    const listeners = eventListenersRef.current[event];
+    listeners?.forEach((listener) => {
       void listener(payload as never);
     });
   };
 
   const subscribe = useCallback(
     <K extends keyof EventMap>(event: K, callback: EventCallback<K>) => {
-      // Initialize the array if it doesn't exist for the specific event key
-      if (!eventListeners[event]) {
-        eventListeners[event] = [];
-      }
+      const listeners = eventListenersRef.current[event] ?? [];
+      eventListenersRef.current[event] = [...listeners, callback];
 
-      // Get the specific listener array and assert its type to EventCallback<K>[]
-      const listeners = eventListeners[event] as EventCallback<K>[];
-      listeners.push(callback);
-
-      // Return the unsubscribe function
       return () => {
-        const currentListeners = eventListeners[event];
-        if (!currentListeners) return; // No listeners for this event
-
-        // Filter the listeners with proper type assertion before assignment
-        eventListeners[event] = currentListeners.filter(
-          (l) => l !== callback,
-        ) as unknown as (typeof eventListeners)[typeof event];
+        const current = eventListenersRef.current[event];
+        if (!current) return;
+        eventListenersRef.current[event] = current.filter(
+          (cb): cb is EventCallback<K> => cb !== callback,
+        );
       };
     },
     [],
@@ -160,7 +159,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
           });
         } else {
           setIsSubmitting(true);
-          await new Promise((res) => setTimeout(res, 6000));
+          await new Promise((res) => setTimeout(res, 600)); // simulate async work
           await onComplete(data);
           setIsSubmitting(false);
           if (enableThankYouPage) setIsCompleted(true);
@@ -227,9 +226,9 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     [currentStep, updatePageConfig],
   );
 
-  const currentChild = React.Children.toArray(children)[currentStep];
-  const enhancedChild = React.isValidElement(currentChild)
-    ? React.cloneElement(currentChild as React.ReactElement, {
+  const currentChild = Children.toArray(children)[currentStep];
+  const enhancedChild = isValidElement(currentChild)
+    ? cloneElement(currentChild as React.ReactElement, {
         setPageConfig: (config: PageConfig) =>
           updatePageConfig(currentStep, config),
       })
@@ -279,8 +278,9 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   useEffect(() => {
     if (!warnBeforeUnload) return;
     const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+      // Deprecated but still required for some browsers
       e.preventDefault();
-      e.returnValue = '';
+      e.returnValue = ''; // Required for Chrome
     };
     window.addEventListener('beforeunload', beforeUnloadHandler);
     return () =>
@@ -288,7 +288,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   }, [warnBeforeUnload]);
 
   const showThankYou = isCompleted && enableThankYouPage;
-  const thankYouStep = React.Children.toArray(children)[totalSteps];
+  const thankYouStep = Children.toArray(children)[totalSteps];
 
   return (
     <CheckAvailableToastProvider>
@@ -329,10 +329,10 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
 
 /**
  * Hook to access the CVRocket context.
- * Throws an error if used outside the provider.
+ * Must be used within CVRocketProvider.
  */
 export const useCVRocket = (): CVRocketContextValue => {
-  const context = React.useContext(CVRocketContext);
+  const context = useContext(CVRocketContext);
   if (!context) {
     throw new Error('useCVRocket must be used within a CVRocketProvider');
   }

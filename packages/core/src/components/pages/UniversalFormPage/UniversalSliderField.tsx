@@ -1,4 +1,5 @@
 import { FieldErrors, useFormContext } from 'react-hook-form';
+
 import { Slider } from '../../base/slider.tsx';
 
 interface UniversalSliderFieldProps {

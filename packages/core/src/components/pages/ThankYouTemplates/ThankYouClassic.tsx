@@ -1,7 +1,7 @@
 // ThankYouPages.tsx
+import { animate } from '@motionone/dom';
 import { CheckCircle } from 'lucide-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
-import { animate } from '@motionone/dom';
 
 /**
  * Shared props for all Thank You page variants.

@@ -26,7 +26,7 @@ const exampleSchema = z.object({
 
 const App = () => {
   return (
-    <div>
+    <div className="container mx-auto">
       <CVRocketProvider
         onComplete={(data) => {
           console.log('Form completed:', data);

@@ -1,12 +1,13 @@
 import {
-  useState,
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
-  type ReactNode,
+  useState,
 } from 'react';
-import { useCVRocket } from '../../../providers/CVRocketProvider';
+
 import { cn } from '../../../../utils/utils';
+import { useCVRocket } from '../../../providers/CVRocketProvider';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
 
 interface OneSelectionContextType {
@@ -59,8 +60,10 @@ export function OneSelectPage({
   // Restore selection from data
   useEffect(() => {
     const storedValue = data[datakey];
-    if (storedValue) {
+    if (typeof storedValue === 'string') {
       setSelectedValue(storedValue);
+    } else {
+      setSelectedValue(null);
     }
   }, [datakey, data]);
 

@@ -1,9 +1,10 @@
 import { animate } from '@motionone/dom';
 import { FC, useCallback, useMemo, useRef } from 'react';
-import { Button } from './base/button';
+
+import { cn } from '../../utils/utils.ts';
 import { useCVRocket } from '../providers/CVRocketProvider';
 import { useToast } from '../providers/ToastProvider.tsx';
-import { cn } from '../../utils/utils.ts';
+import { Button } from './base/button';
 
 export interface ButtonFooterProps {
   currentStep: number;

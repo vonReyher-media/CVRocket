@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 /**
  * Eine wiederverwendbare Card-Komponente mit optionaler Auswahlfunktion und Icon.

@@ -1,5 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
 import { animate } from '@motionone/dom';
+import { useEffect, useRef, useState } from 'react';
+
 import { useCVRocket } from '../../providers/CVRocketProvider';
 import { EnhancedSlider } from '../base/enhanced-slider.tsx';
 import { PageTemplate } from './index.ts';

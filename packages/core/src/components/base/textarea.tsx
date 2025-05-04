@@ -1,5 +1,5 @@
 // base/textarea.tsx
-import * as React from 'react';
+import React from 'react';
 
 interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {

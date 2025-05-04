@@ -1,8 +1,9 @@
 'use client';
 
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Checkbox, type CheckboxProps } from './checkbox';
+
 import { cn } from '../../../utils/utils.ts';
+import { Checkbox, type CheckboxProps } from './checkbox';
 
 export interface CheckboxWithLabelProps
   extends Omit<CheckboxProps, 'className'> {

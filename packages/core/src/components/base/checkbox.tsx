@@ -1,7 +1,8 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import { forwardRef, useState, type InputHTMLAttributes } from 'react';
+import { forwardRef, type InputHTMLAttributes, useState } from 'react';
+
 import { cn } from '../../../utils/utils.ts';
 
 export interface CheckboxProps

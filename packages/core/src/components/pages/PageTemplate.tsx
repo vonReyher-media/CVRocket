@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
 import { animate } from '@motionone/dom';
-import { cn } from '../../../utils/utils';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import { deepEqual } from '../../../utils/deepEqual';
-import { CheckboxWithLabel, Progress } from '../base';
+import { cn } from '../../../utils/utils';
 import { useCVRocket } from '../../providers/CVRocketProvider';
+import { CheckboxWithLabel, Progress } from '../base';
 
 /**
  * Information for the optional AGB (terms) checkbox.

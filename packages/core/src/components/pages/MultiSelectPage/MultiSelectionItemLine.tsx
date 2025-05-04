@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
+
 import { cn } from '../../../../utils/utils';
 import { useMultiSelectContext } from './index';
-import type { ReactNode } from 'react';
 
 interface MultiSelectionItemLineProps {
   value: string;
