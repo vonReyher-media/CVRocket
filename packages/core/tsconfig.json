@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@cvrocket/core": ["./src"]
+      "@cvrocket/core": ["./src"],
+      "react": ["./node_modules/@types/react"]
     },
     "jsx": "react-jsx",
     "types": ["react", "node"],
