@@ -22,8 +22,7 @@ jobs:
 
       - name: Show directory structure
         run: tree -a -I 'node_modules|.git'
-        with:
-            working-directory: ${{ github.workspace }}/cvrocket
+        working-directory: ${{ github.workspace }}/cvrocket
 
       - name: Extract tag
         id: get_tag
