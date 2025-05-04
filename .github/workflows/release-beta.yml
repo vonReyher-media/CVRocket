@@ -47,8 +47,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       
 
-      - name: Install dependencies (workspace root)
+      - name: Install dependencies (cvrocket)
         run: pnpm install --frozen-lockfile
+        working-directory: cvrocket
+
 
       - name: Build package
         working-directory: packages/core
