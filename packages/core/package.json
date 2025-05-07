@@ -19,8 +19,9 @@
     "dist/style.css"
   ],
   "scripts": {
-    "build": "tsup && pnpm build:css",
+    "build": "tsup && pnpm build:css && pnpm copy:readme",
     "build:css": "postcss src/index.css -o dist/style.css && postcss src/index.css -o dist/styles.min.css --env production",
+    "copy:readme": "cpy README.md dist/",
     "prepublishOnly": "pnpm build",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -54,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
     "autoprefixer": "^10.4.21",
+    "cpy-cli": "^5.0.0",
     "cssnano": "^7.0.6",
     "eslint": "^9.26.0",
     "eslint-plugin-import": "^2.31.0",
