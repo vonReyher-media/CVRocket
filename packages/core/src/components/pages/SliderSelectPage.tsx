@@ -166,9 +166,6 @@ export function SliderSelectPage({
               >
                 {formattedValue}
               </div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                Selected Value
-              </div>
             </div>
           )}
 

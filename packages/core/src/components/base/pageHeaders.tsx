@@ -60,9 +60,7 @@ const PageHeader = ({
           text_alignment === 'center' ? 'flex flex-col items-center' : '',
         )}
       >
-        <h1 className={cn('text-3xl lg:text-4xl font-bold text-foreground')}>
-          {title}
-        </h1>
+        <h1 className={cn('text-3xl lg:text-4xl font-bold')}>{title}</h1>
         <p
           className={cn(
             'text-sm text-foreground/70 mt-2 md:mt-3',

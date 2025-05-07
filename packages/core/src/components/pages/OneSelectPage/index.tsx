@@ -113,7 +113,7 @@ export function OneSelectPage({
         showBackButtonOnThisPage={showBackButtonOnThisPage}
         isFormValid={isFormValid}
       >
-        {header && <PageHeader {...header} />}f
+        {header && <PageHeader {...header} />}
         <div
           className={cn(
             'gap-4',
