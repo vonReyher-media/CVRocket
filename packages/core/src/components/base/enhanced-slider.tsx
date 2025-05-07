@@ -38,7 +38,7 @@ export const EnhancedSlider = React.forwardRef<
     const sliderRef = useRef<HTMLInputElement>(null);
     const thumbRef = useRef<HTMLDivElement>(null);
     const combinedRef = useCombinedRefs(ref, sliderRef);
-    const debounceTimeout = useRef<ReturnType<typeof setTimeout>>();
+    const debounceTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
     // Sync with controlled value
     useEffect(() => {
@@ -51,7 +51,7 @@ export const EnhancedSlider = React.forwardRef<
       (val: number) => {
         if (val === value) return;
         if (debounceChangeMs > 0) {
-          clearTimeout(debounceTimeout.current);
+          if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
           debounceTimeout.current = setTimeout(() => {
             onChange(val);
           }, debounceChangeMs);

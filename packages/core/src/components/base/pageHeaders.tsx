@@ -3,7 +3,7 @@ import { ShieldQuestionIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Drawer } from 'vaul';
 
-import { cn } from '../../../utils/utils.ts';
+import { cn } from '../../utils/utils.ts';
 
 export interface PageHeaderProps {
   title: string;

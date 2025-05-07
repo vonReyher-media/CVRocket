@@ -1,17 +1,4 @@
-/**
- * CVRocketProvider – central form provider with step management,
- * context access, validation, persistence, and protected navigation.
- *
- * Features:
- * - Configurable step-based form system
- * - Context-based navigation & data management
- * - Event-based step handling
- * - Optional terms checkbox integration
- * - Supports persistent storage & Thank You page
- * - Auto-navigation & button footer integration
- */
-
-import React, {
+import {
   Children,
   cloneElement,
   createContext,
@@ -24,13 +11,13 @@ import React, {
   useState,
 } from 'react';
 
-import { cn } from '../../utils/utils.ts';
 import {
   CVRocketFullscreenHeaderProps,
   FullScreenHeaderLayout,
 } from '../components/base/fullscreenHeader.tsx';
 import { ButtonFooter } from '../components/buttonFooter';
 import { usePersistentCVRocket, useProtectedStepNavigation } from '../hooks';
+import { cn } from '../utils/utils.ts';
 import { CheckAvailableToastProvider } from './ToastProvider';
 
 /** Shape of form data object */
@@ -63,6 +50,11 @@ type EventHandler = <K extends keyof EventMap>(
   payload: EventMap[K],
 ) => void;
 
+/** Listener map with typed keys */
+type GenericListenerMap = {
+  [K in keyof EventMap]?: EventCallback<K>[];
+};
+
 /** Props for the CVRocketProvider */
 interface CVRocketProviderProps {
   children: ReactNode;
@@ -76,15 +68,10 @@ interface CVRocketProviderProps {
   warnBeforeUnload?: boolean;
   persistData?: boolean;
   fullScreenLayout: CVRocketFullscreenHeaderProps | null;
-  /**
-   * Class Names for the CRM Rocket Provider
-   * @example className: 'container mx-auto'
-   */
   className?: string;
   storageKey?: string;
 }
 
-/** Context value available via useCVRocket */
 interface CVRocketContextValue {
   currentStep: number;
   totalSteps: number;
@@ -126,11 +113,6 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const totalSteps = Children.count(children);
 
-  type GenericListenerMap = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: EventCallback<any>[]; // TODO: replace with a more specific type
-  };
-
   const eventListenersRef = useRef<GenericListenerMap>({});
 
   const updateFormData = (newData: FormData) => {
@@ -140,18 +122,20 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   const emit: EventHandler = (event, payload) => {
     const listeners = eventListenersRef.current[event];
     listeners?.forEach((listener) => {
-      void listener(payload as never);
+      void listener(payload);
     });
   };
 
   const subscribe = useCallback(
     <K extends keyof EventMap>(event: K, callback: EventCallback<K>) => {
       const listeners = eventListenersRef.current[event] ?? [];
+      // @ts-expect-error – type-safe via controlled usage in subscribe
       eventListenersRef.current[event] = [...listeners, callback];
 
       return () => {
         const current = eventListenersRef.current[event];
         if (!current) return;
+        // @ts-expect-error – type-safe via controlled usage in subscribe
         eventListenersRef.current[event] = current.filter(
           (cb): cb is EventCallback<K> => cb !== callback,
         );
@@ -172,7 +156,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
           });
         } else {
           setIsSubmitting(true);
-          await new Promise((res) => setTimeout(res, 600)); // simulate async work
+          await new Promise((res) => setTimeout(res, 600));
           await onComplete(data);
           setIsSubmitting(false);
           if (enableThankYouPage) setIsCompleted(true);
@@ -203,9 +187,9 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     });
   }, [onStepChange]);
 
-  const submitForm = useCallback(() => {
+  const submitForm = useCallback(async () => {
     try {
-      onComplete(data);
+      await onComplete(data);
     } catch (error) {
       onError?.(
         error instanceof Error ? error : new Error('Form submission error'),
@@ -239,12 +223,17 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     [currentStep, updatePageConfig],
   );
 
-  const currentChild = Children.toArray(children)[currentStep];
+  const currentChild = Children.toArray(children)[currentStep] ?? null;
   const enhancedChild = isValidElement(currentChild)
-    ? cloneElement(currentChild as React.ReactElement, {
-        setPageConfig: (config: PageConfig) =>
-          updatePageConfig(currentStep, config),
-      })
+    ? cloneElement(
+        currentChild as React.ReactElement<{
+          setPageConfig?: (config: PageConfig) => void;
+        }>,
+        {
+          setPageConfig: (config: PageConfig) =>
+            updatePageConfig(currentStep, config),
+        },
+      )
     : currentChild;
 
   const contextValue: CVRocketContextValue = {
@@ -291,9 +280,8 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   useEffect(() => {
     if (!warnBeforeUnload) return;
     const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
-      // Deprecated but still required for some browsers
       e.preventDefault();
-      e.returnValue = ''; // Required for Chrome
+      e.returnValue = '';
     };
     window.addEventListener('beforeunload', beforeUnloadHandler);
     return () =>
@@ -301,7 +289,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   }, [warnBeforeUnload]);
 
   const showThankYou = isCompleted && enableThankYouPage;
-  const thankYouStep = Children.toArray(children)[totalSteps];
+  const thankYouStep = Children.toArray(children)[totalSteps] ?? null;
 
   return (
     <CheckAvailableToastProvider>
@@ -316,10 +304,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
         >
           {fullScreenLayout ? (
             <div className="flex flex-col h-full">
-              {/* Fixierter Header */}
               <FullScreenHeaderLayout {...fullScreenLayout} />
-
-              {/* Scrollbarer Content */}
               <div className="flex-grow overflow-y-auto pt-6 container mx-auto px-5">
                 {isSubmitting
                   ? (loadingComponent ?? (
@@ -333,8 +318,6 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                     ? thankYouStep
                     : enhancedChild}
               </div>
-
-              {/* Fixierter Footer */}
               {!isSubmitting && !showThankYou && (
                 <div className="shrink-0 py-5 bg-background z-10 px-10">
                   {pageConfigs[currentStep]?.showNextButton && (
@@ -347,7 +330,6 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
               )}
             </div>
           ) : (
-            // Nicht-Fullscreen Layout
             <div className="flex flex-col h-full justify-between w-full">
               <div className="flex-grow pt-6">
                 {isSubmitting
@@ -357,7 +339,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                     : enhancedChild}
               </div>
               {!isSubmitting && !showThankYou && (
-                <div className={cn('w-full py-5 bg-background')}>
+                <div className="w-full py-5 bg-background">
                   {pageConfigs[currentStep]?.showNextButton && (
                     <ButtonFooter
                       currentStep={currentStep}
@@ -374,10 +356,6 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   );
 };
 
-/**
- * Hook to access the CVRocket context.
- * Must be used within CVRocketProvider.
- */
 export const useCVRocket = (): CVRocketContextValue => {
   const context = useContext(CVRocketContext);
   if (!context) {

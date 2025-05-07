@@ -10,4 +10,5 @@ export default defineConfig({
   minify: false, // Optional, depending on use
   target: 'esnext',
   external: ['react', 'react-dom'],
+  tsconfig: 'tsconfig.json',
 });

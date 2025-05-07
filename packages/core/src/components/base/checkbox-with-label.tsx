@@ -1,9 +1,7 @@
-'use client';
-
 import { cva } from 'class-variance-authority';
 import { forwardRef, type HTMLAttributes } from 'react';
 
-import { cn } from '../../../utils/utils.ts';
+import { cn } from '../../utils/utils.ts';
 import { Checkbox, type CheckboxProps } from './checkbox';
 
 export interface CheckboxWithLabelProps

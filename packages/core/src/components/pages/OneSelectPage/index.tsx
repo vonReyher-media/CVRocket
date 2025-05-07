@@ -6,9 +6,9 @@ import {
   useState,
 } from 'react';
 
-import { cn } from '../../../../utils/utils';
 import { useCVRocket } from '../../../providers/CVRocketProvider';
-import pageHeaders, { PageHeaderProps } from '../../base/pageHeaders.tsx';
+import { cn } from '../../../utils/utils';
+import pageHeaders, { PageHeaderProps } from '../../base/pageHeaders';
 import PageHeader from '../../base/pageHeaders.tsx';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
 

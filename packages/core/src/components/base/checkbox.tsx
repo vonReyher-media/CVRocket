@@ -1,10 +1,8 @@
-'use client';
-
 import { cva } from 'class-variance-authority';
 import { Check } from 'lucide-react';
 import { forwardRef, type InputHTMLAttributes, useState } from 'react';
 
-import { cn } from '../../../utils/utils.ts';
+import { cn } from '../../utils/utils.ts';
 
 export interface CheckboxProps
   extends Omit<

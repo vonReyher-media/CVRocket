@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { cn } from '../../../../utils/utils';
+import { cn } from '../../../utils/utils';
 import { useOneSelectContext } from './index';
 
 interface OneSelectionItemCardProps {

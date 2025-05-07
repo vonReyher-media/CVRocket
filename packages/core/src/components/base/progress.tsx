@@ -1,4 +1,4 @@
-import { cn } from '../../../utils/utils.ts';
+import { cn } from '../../utils/utils.ts';
 
 export interface ProgressProps {
   current: number;

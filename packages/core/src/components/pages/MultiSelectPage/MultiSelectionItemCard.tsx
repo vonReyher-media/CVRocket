@@ -1,9 +1,7 @@
-'use client';
-
 import { Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { cn } from '../../../../utils/utils';
+import { cn } from '../../../utils/utils';
 import { useMultiSelectContext } from './index';
 
 interface MultiSelectionItemCardProps {
