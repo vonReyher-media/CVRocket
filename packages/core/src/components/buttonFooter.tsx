@@ -114,6 +114,7 @@ export const ButtonFooter: FC<ButtonFooterProps> = ({
             'ml-auto sm:w-auto w-full transition-opacity',
             !isStepValid && 'opacity-50 pointer-events-auto',
           )}
+          variant="default"
         >
           {isLastStep ? 'Absenden' : 'Weiter'}
         </Button>

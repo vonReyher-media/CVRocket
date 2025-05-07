@@ -1,5 +1,6 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import { forwardRef, type HTMLAttributes } from 'react';
 
 import { cn } from '../../../utils/utils.ts';
@@ -7,70 +8,31 @@ import { Checkbox, type CheckboxProps } from './checkbox';
 
 export interface CheckboxWithLabelProps
   extends Omit<CheckboxProps, 'className'> {
-  /**
-   * The text label displayed next to the checkbox.
-   */
   label: string;
-
-  /**
-   * Additional custom CSS classes for the outer container.
-   */
   className?: string;
-
-  /**
-   * Additional custom CSS classes for the checkbox component.
-   */
   checkboxClassName?: string;
-
-  /**
-   * Optional link text appended to the label.
-   */
   linkText?: string;
-
-  /**
-   * URL for the optional link.
-   * If provided together with `linkText`, a clickable link is rendered.
-   */
   linkHref?: string;
-
-  /**
-   * Additional props for the container element
-   */
   containerProps?: HTMLAttributes<HTMLLabelElement>;
 }
 
-/**
- * A checkbox combined with a label and optional external link.
- *
- * Supports both controlled and uncontrolled usage patterns.
- * The entire container (label and checkbox) is clickable to toggle the checked state.
- *
- * @example
- * // Basic usage
- * <CheckboxWithLabel id="terms" label="I agree to the terms" />
- *
- * @example
- * // With link
- * <CheckboxWithLabel
- *   id="privacy"
- *   label="I agree to the"
- *   linkText="privacy policy"
- *   linkHref="/privacy"
- * />
- *
- * @example
- * // Controlled usage
- * const [checked, setChecked] = useState(false);
- * <CheckboxWithLabel
- *   id="newsletter"
- *   label="Subscribe to newsletter"
- *   checked={checked}
- *   onCheckedChange={setChecked}
- * />
- *
- * @param {CheckboxWithLabelProps} props - The props for the CheckboxWithLabel component.
- * @returns {JSX.Element} A fully interactive checkbox-with-label element.
- */
+// Optional: eigene Checkbox-Variants, falls du unterschiedliche Varianten möchtest
+const checkboxWithLabelVariants = cva(
+  'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors',
+  {
+    variants: {
+      variant: {
+        default: 'border-border hover:bg-muted bg-background text-foreground',
+        outline:
+          'border-muted-foreground hover:bg-accent bg-background text-foreground',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
 export const CheckboxWithLabel = forwardRef<
   HTMLInputElement,
   CheckboxWithLabelProps
@@ -91,10 +53,7 @@ export const CheckboxWithLabel = forwardRef<
     return (
       <label
         htmlFor={id}
-        className={cn(
-          'flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors',
-          className,
-        )}
+        className={cn(checkboxWithLabelVariants(), className)}
         {...containerProps}
       >
         <Checkbox
@@ -103,14 +62,14 @@ export const CheckboxWithLabel = forwardRef<
           className={checkboxClassName}
           {...checkboxProps}
         />
-        <div className="text-sm text-gray-700 select-none">
+        <div className="text-sm text-muted-foreground select-none">
           {label}
           {linkText && linkHref && (
             <a
               href={linkHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 ml-1"
+              className="text-primary hover:text-primary/80 ml-1 underline underline-offset-2"
               onClick={(e) => e.stopPropagation()}
             >
               {linkText}

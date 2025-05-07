@@ -18,7 +18,7 @@ export const Toast: React.FC<ToastProps> = ({
   visible,
 }) => {
   const toastRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const animatingRef = useRef(false);
 
   const dismissToast = useCallback(() => {
@@ -69,19 +69,19 @@ export const Toast: React.FC<ToastProps> = ({
     <div
       ref={toastRef}
       onClick={dismissToast}
-      className="pointer-events-auto flex items-center gap-3 rounded-lg bg-white dark:bg-gray-800 px-4 py-3 shadow-lg border border-gray-200 dark:border-gray-700 w-full max-w-md"
+      className="pointer-events-auto flex items-center gap-3 rounded-lg bg-background px-4 py-3 shadow-lg border border-muted w-full max-w-md"
       role="alert"
       aria-live="polite"
     >
       <div className="flex-1">
-        <p className="text-sm text-gray-800 dark:text-gray-200">{message}</p>
+        <p className="text-sm text-muted-foreground">{message}</p>
       </div>
       <button
         onClick={(e) => {
           e.stopPropagation();
           dismissToast();
         }}
-        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none"
+        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus:outline-none"
         aria-label="Close"
       >
         <svg

@@ -24,6 +24,11 @@ import React, {
   useState,
 } from 'react';
 
+import { cn } from '../../utils/utils.ts';
+import {
+  CVRocketFullscreenHeaderProps,
+  FullScreenHeaderLayout,
+} from '../components/base/fullscreenHeader.tsx';
 import { ButtonFooter } from '../components/buttonFooter';
 import { usePersistentCVRocket, useProtectedStepNavigation } from '../hooks';
 import { CheckAvailableToastProvider } from './ToastProvider';
@@ -70,6 +75,12 @@ interface CVRocketProviderProps {
   protectFormNavigation?: boolean;
   warnBeforeUnload?: boolean;
   persistData?: boolean;
+  fullScreenLayout: CVRocketFullscreenHeaderProps | null;
+  /**
+   * Class Names for the CRM Rocket Provider
+   * @example className: 'container mx-auto'
+   */
+  className?: string;
   storageKey?: string;
 }
 
@@ -105,6 +116,8 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   enableThankYouPage = true,
   persistData = false,
   storageKey,
+  fullScreenLayout = null,
+  className,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState<FormData>({});
@@ -292,11 +305,22 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
 
   return (
     <CheckAvailableToastProvider>
-      <div className="py-14">
-        <CVRocketContext.Provider value={contextValue}>
-          <div className="container mx-auto px-10">
-            <div className="flex flex-col h-full justify-between w-full">
-              <div className="flex-grow">
+      <CVRocketContext.Provider value={contextValue}>
+        <div
+          className={cn(
+            fullScreenLayout
+              ? 'fixed inset-0 w-screen h-screen bg-background'
+              : 'container mx-auto px-10',
+            className,
+          )}
+        >
+          {fullScreenLayout ? (
+            <div className="flex flex-col h-full">
+              {/* Fixierter Header */}
+              <FullScreenHeaderLayout {...fullScreenLayout} />
+
+              {/* Scrollbarer Content */}
+              <div className="flex-grow overflow-y-auto pt-6 container mx-auto px-5">
                 {isSubmitting
                   ? (loadingComponent ?? (
                       <div className="text-center py-20">
@@ -309,8 +333,10 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                     ? thankYouStep
                     : enhancedChild}
               </div>
+
+              {/* Fixierter Footer */}
               {!isSubmitting && !showThankYou && (
-                <div className="w-full">
+                <div className="shrink-0 py-5 bg-background z-10 px-10">
                   {pageConfigs[currentStep]?.showNextButton && (
                     <ButtonFooter
                       currentStep={currentStep}
@@ -320,9 +346,30 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                 </div>
               )}
             </div>
-          </div>
-        </CVRocketContext.Provider>
-      </div>
+          ) : (
+            // Nicht-Fullscreen Layout
+            <div className="flex flex-col h-full justify-between w-full">
+              <div className="flex-grow pt-6">
+                {isSubmitting
+                  ? loadingComponent
+                  : showThankYou
+                    ? thankYouStep
+                    : enhancedChild}
+              </div>
+              {!isSubmitting && !showThankYou && (
+                <div className={cn('w-full py-5 bg-background')}>
+                  {pageConfigs[currentStep]?.showNextButton && (
+                    <ButtonFooter
+                      currentStep={currentStep}
+                      totalSteps={totalSteps}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </CVRocketContext.Provider>
     </CheckAvailableToastProvider>
   );
 };

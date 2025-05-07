@@ -8,6 +8,7 @@ import {
 
 import { cn } from '../../../../utils/utils';
 import { useCVRocket } from '../../../providers/CVRocketProvider';
+import PageHeader, { PageHeaderProps } from '../../base/pageHeaders.tsx';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
 
 interface SelectionContextType {
@@ -28,8 +29,7 @@ export function useMultiSelectContext(): SelectionContextType {
 }
 
 interface MultiSelectPageProps extends BaseTemplateProps {
-  title: string;
-  description?: string;
+  header?: PageHeaderProps;
   children: ReactNode;
   datakey: string;
   required?: number;
@@ -37,8 +37,7 @@ interface MultiSelectPageProps extends BaseTemplateProps {
 }
 
 export function MultiSelectPage({
-  title,
-  description,
+  header,
   children,
   showAgb,
   agbInfo,
@@ -88,12 +87,7 @@ export function MultiSelectPage({
         showNextButtonOnThisPage={showNextButtonOnThisPage}
         isFormValid={formValid}
       >
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-          {description && (
-            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-          )}
-        </div>
+        {header && <PageHeader {...header} />}
         <div
           className={cn(
             'gap-4',

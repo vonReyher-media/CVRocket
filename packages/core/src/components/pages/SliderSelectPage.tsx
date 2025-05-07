@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useCVRocket } from '../../providers/CVRocketProvider';
 import { EnhancedSlider } from '../base/enhanced-slider.tsx';
+import PageHeader, { PageHeaderProps } from '../base/pageHeaders.tsx';
 import { PageTemplate } from './index.ts';
 import { BaseTemplateProps } from './PageTemplate.tsx';
 
@@ -19,6 +20,7 @@ interface SliderSelectPageProps extends BaseTemplateProps {
   className?: string;
   showValueLabel?: boolean;
   autoAdvance?: boolean;
+  header: PageHeaderProps;
 }
 
 /**
@@ -41,6 +43,7 @@ export function SliderSelectPage({
   showNextButtonOnThisPage = true,
   autoAdvance = false,
   className,
+  header,
 }: SliderSelectPageProps) {
   const { updateFormData, data, currentStep, totalSteps, currentPageConfig } =
     useCVRocket();
@@ -152,16 +155,8 @@ export function SliderSelectPage({
       showBackButtonOnThisPage={showBackButtonOnThisPage}
       isFormValid={isFormValid}
     >
+      <PageHeader {...header} />
       <div className="slider-page-content w-full">
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold text-foreground">{title}</h2>
-          {description && (
-            <p className="mt-2 text-base text-muted-foreground max-w-md mx-auto">
-              {description}
-            </p>
-          )}
-        </div>
-
         <div className={`w-full flex flex-col items-center ${className ?? ''}`}>
           {showValueLabel && typeof value === 'number' && (
             <div className="mb-8 text-center">

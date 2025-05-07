@@ -8,6 +8,8 @@ import {
 
 import { cn } from '../../../../utils/utils';
 import { useCVRocket } from '../../../providers/CVRocketProvider';
+import pageHeaders, { PageHeaderProps } from '../../base/pageHeaders.tsx';
+import PageHeader from '../../base/pageHeaders.tsx';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
 
 interface OneSelectionContextType {
@@ -31,8 +33,7 @@ export function useOneSelectContext(): OneSelectionContextType {
 }
 
 interface OneSelectPageProps extends BaseTemplateProps {
-  title: string;
-  description?: string;
+  header?: PageHeaderProps;
   children: ReactNode;
   datakey: string;
 }
@@ -41,8 +42,7 @@ interface OneSelectPageProps extends BaseTemplateProps {
  * OneSelectPage – Single-selection page with auto-navigation and optional AGB check.
  */
 export function OneSelectPage({
-  title,
-  description,
+  header,
   children,
   datakey,
   showBackButtonOnThisPage,
@@ -113,12 +113,7 @@ export function OneSelectPage({
         showBackButtonOnThisPage={showBackButtonOnThisPage}
         isFormValid={isFormValid}
       >
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-          {description && (
-            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-          )}
-        </div>
+        {header && <PageHeader {...header} />}f
         <div
           className={cn(
             'gap-4',

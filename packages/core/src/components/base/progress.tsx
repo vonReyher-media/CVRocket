@@ -1,15 +1,24 @@
-interface ProgressProps {
+import { cn } from '../../../utils/utils.ts';
+
+export interface ProgressProps {
   current: number;
   total: number;
+  className?: string;
 }
 
-const Progress = ({ current, total }: ProgressProps) => {
-  const progress = (current / total) * 100;
+const Progress = ({ current, total, className }: ProgressProps) => {
+  const progress = Math.min(Math.max((current / total) * 100, 0), 100);
 
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+    <div
+      className={cn('w-full h-2.5 rounded-full bg-muted mb-6', className)}
+      role="progressbar"
+      aria-valuenow={Math.round(progress)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
       <div
-        className="bg-primary h-2.5 rounded-full transition-all duration-300"
+        className="h-2.5 rounded-full bg-primary transition-all duration-300"
         style={{ width: `${progress}%` }}
       />
     </div>

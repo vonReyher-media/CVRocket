@@ -1,5 +1,6 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import { Check } from 'lucide-react';
 import { forwardRef, type InputHTMLAttributes, useState } from 'react';
 
@@ -10,33 +11,28 @@ export interface CheckboxProps
     InputHTMLAttributes<HTMLInputElement>,
     'type' | 'checked' | 'defaultChecked' | 'onChange'
   > {
-  /** Unique ID for the checkbox input */
   id: string;
-  /** Controlled checked state */
   checked?: boolean;
-  /** Uncontrolled default checked state */
   defaultChecked?: boolean;
-  /** Callback when the checked state changes */
   onCheckedChange?: (checked: boolean) => void;
-  /** Additional custom CSS classes */
   className?: string;
 }
 
-/**
- * Checkbox component that supports both controlled and uncontrolled usage.
- *
- * @example
- * // Controlled usage
- * const [checked, setChecked] = useState(false);
- * <Checkbox id="terms" checked={checked} onCheckedChange={setChecked} />
- *
- * @example
- * // Uncontrolled usage
- * <Checkbox id="terms" defaultChecked={true} />
- *
- * @param {CheckboxProps} props - The props for the Checkbox component.
- * @returns {JSX.Element} A checkbox that works in controlled or uncontrolled mode.
- */
+const checkboxVariants = cva(
+  'flex h-5 w-5 cursor-pointer items-center justify-center rounded border transition-colors',
+  {
+    variants: {
+      checked: {
+        true: 'bg-primary border-primary text-primary-foreground',
+        false: 'bg-background border-muted',
+      },
+    },
+    defaultVariants: {
+      checked: false,
+    },
+  },
+);
+
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     { id, checked, defaultChecked, onCheckedChange, className = '', ...props },
@@ -65,16 +61,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           id={id}
           checked={currentChecked}
           onChange={(e) => handleChange(e.target.checked)}
-          className="absolute opacity-0 w-0 h-0"
+          className="peer sr-only"
         />
         <label
           htmlFor={id}
-          className={cn(
-            'flex h-5 w-5 cursor-pointer items-center justify-center rounded border transition-colors',
-            currentChecked ? 'border-primary bg-primary' : 'border-gray-300',
-          )}
+          className={cn(checkboxVariants({ checked: currentChecked }))}
         >
-          {currentChecked && <Check className="h-4 w-4 text-white" />}
+          {currentChecked && <Check className="h-4 w-4" />}
         </label>
       </div>
     );

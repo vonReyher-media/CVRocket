@@ -4,12 +4,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z, ZodSchema } from 'zod';
 
 import { useCVRocket } from '../../../providers/CVRocketProvider';
+import PageHeader, { PageHeaderProps } from '../../base/pageHeaders.tsx';
 import { PageTemplate } from '../index.ts';
 import { BaseTemplateProps } from '../PageTemplate.tsx';
 
 interface UniversalFormPageProps extends BaseTemplateProps {
-  title: string;
-  description?: string;
+  header?: PageHeaderProps;
   datakey: string;
   zodSchema: ZodSchema;
   children: React.ReactNode;
@@ -20,8 +20,7 @@ interface UniversalFormPageProps extends BaseTemplateProps {
  * UniversalFormPage – A responsive, validated form page with CVRocket integration.
  */
 export function UniversalFormPage({
-  title,
-  description,
+  header,
   datakey,
   zodSchema,
   showAgb,
@@ -60,12 +59,7 @@ export function UniversalFormPage({
         showBackButtonOnThisPage={showBackButtonOnThisPage}
         isFormValid={isValid}
       >
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-          {description && (
-            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-          )}
-        </div>
+        {header && <PageHeader {...header} />}
         <div className={`grid gap-4 grid-cols-1 sm:grid-cols-2 ${className}`}>
           {children}
         </div>

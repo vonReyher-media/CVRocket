@@ -227,10 +227,10 @@ const PageTemplate = ({
   };
 
   return (
-    <div className="cv-page overflow-hidden py-4">
+    <div className="overflow-hidden py-3">
       <Progress current={currentStep + 1} total={totalSteps} />
 
-      <div ref={contentRef} className={cn('cv-content relative', className)}>
+      <div ref={contentRef} className={cn('relative', className)}>
         {children}
 
         {showAgb && (
