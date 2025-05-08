@@ -8,7 +8,12 @@ export default defineConfig({
   clean: true, // Clean dist before build
   outDir: 'dist',
   minify: false, // Optional, depending on use
-  target: 'esnext',
+  target: 'es2020',
   external: ['react', 'react-dom'],
   tsconfig: 'tsconfig.json',
+  splitting: false,
+  treeshake: true,
+  esbuildOptions(options) {
+    options.jsx = 'automatic';
+  },
 });
