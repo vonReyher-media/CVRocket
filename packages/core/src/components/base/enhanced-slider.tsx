@@ -13,7 +13,7 @@ export interface EnhancedSliderProps {
 }
 
 /**
- * EnhancedSlider – A modern, accessible slider component with live feedback and animation.
+ * EnhancedSlider – Ein moderner, barrierefreier Slider mit Live-Feedback und Animation.
  */
 export const EnhancedSlider = React.forwardRef<
   HTMLInputElement,
@@ -38,9 +38,9 @@ export const EnhancedSlider = React.forwardRef<
     const sliderRef = useRef<HTMLInputElement>(null);
     const thumbRef = useRef<HTMLDivElement>(null);
     const combinedRef = useCombinedRefs(ref, sliderRef);
-    const debounceTimeout = useRef<ReturnType<typeof setTimeout>>(null);
+    const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Sync with controlled value
+    // synchronisiere lokalen Wert mit Steuer-Wert
     useEffect(() => {
       setLocalValue(value);
     }, [value]);
@@ -62,7 +62,7 @@ export const EnhancedSlider = React.forwardRef<
       [value, debounceChangeMs, onChange],
     );
 
-    // Mobile touch events
+    // Touch-Events für Mobile
     useEffect(() => {
       const slider = sliderRef.current;
       if (!slider) return;
@@ -75,17 +75,15 @@ export const EnhancedSlider = React.forwardRef<
 
       slider.addEventListener('touchstart', handleTouchStart);
       slider.addEventListener('touchend', handleTouchEnd);
-
       return () => {
         slider.removeEventListener('touchstart', handleTouchStart);
         slider.removeEventListener('touchend', handleTouchEnd);
       };
     }, [localValue, triggerChange]);
 
-    // Animate thumb on drag
+    // Animation beim Ziehen
     useEffect(() => {
       if (!thumbRef.current) return;
-
       animate(
         thumbRef.current,
         isDragging
@@ -95,10 +93,9 @@ export const EnhancedSlider = React.forwardRef<
       );
     }, [isDragging]);
 
-    // Animate thumb position
+    // Position der Thumb-Animation
     useEffect(() => {
       if (!thumbRef.current) return;
-
       animate(
         thumbRef.current,
         { left: `calc(${percentage}% - 12px)` },
@@ -106,12 +103,10 @@ export const EnhancedSlider = React.forwardRef<
       );
     }, [percentage]);
 
-    // Local input change
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newVal = Number(e.target.value);
       setLocalValue(newVal);
-
-      if (onDrag) onDrag(newVal);
+      onDrag?.(newVal);
       triggerChange(newVal);
     };
 
@@ -143,32 +138,28 @@ export const EnhancedSlider = React.forwardRef<
             [&::-webkit-slider-runnable-track]:bg-transparent
             [&::-webkit-slider-runnable-track]:h-2
             [&::-webkit-slider-runnable-track]:rounded-full
-
             [&::-moz-range-track]:appearance-none
             [&::-moz-range-track]:bg-transparent
             [&::-moz-range-track]:h-2
             [&::-moz-range-track]:rounded-full
-
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-6
             [&::-webkit-slider-thumb]:h-6
             [&::-webkit-slider-thumb]:bg-transparent
             [&::-webkit-slider-thumb]:border-none
             [&::-webkit-slider-thumb]:mt-[-8px]
-
             [&::-moz-range-thumb]:appearance-none
             [&::-moz-range-thumb]:w-6
             [&::-moz-range-thumb]:h-6
             [&::-moz-range-thumb]:bg-transparent
             [&::-moz-range-thumb]:border-none
-
             ${className ?? ''}
           `}
           ref={combinedRef}
           {...props}
         />
 
-        {/* Visual track */}
+        {/* Visueller Track */}
         <div className="absolute top-[18px] left-0 right-0 h-2 bg-gray-200 rounded-full pointer-events-none">
           <div
             className="h-full bg-primary rounded-full"
@@ -176,7 +167,7 @@ export const EnhancedSlider = React.forwardRef<
           />
         </div>
 
-        {/* Visual thumb */}
+        {/* Visueller Thumb */}
         <div
           ref={thumbRef}
           className="absolute top-[10px] w-6 h-6 rounded-full bg-primary border-4 border-white shadow-md pointer-events-none"
@@ -196,16 +187,18 @@ export const EnhancedSlider = React.forwardRef<
 
 EnhancedSlider.displayName = 'EnhancedSlider';
 
+/**
+ * Kombiniert mehrere Refs (Callback-Refs oder RefObjects) in einen einzigen Ref.
+ * Verzichtet auf `Object.defineProperty` und nutzt stattdessen direkte Zuweisung.
+ */
 function useCombinedRefs<T>(...refs: React.Ref<T>[]) {
   const targetRef = React.useRef<T>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     refs.forEach((ref) => {
       if (!ref) return;
       if (typeof ref === 'function') {
         ref(targetRef.current);
-      } else {
-        (ref as React.MutableRefObject<T | null>).current = targetRef.current;
       }
     });
   }, [refs]);

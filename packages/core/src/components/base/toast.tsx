@@ -10,6 +10,21 @@ interface ToastProps {
   visible: boolean;
 }
 
+function useCombinedRefs<T>(...refs: React.Ref<T>[]) {
+  const targetRef = React.useRef<T>(null);
+
+  React.useEffect(() => {
+    refs.forEach((ref) => {
+      if (!ref) return;
+      if (typeof ref === 'function') {
+        ref(targetRef.current);
+      }
+    });
+  }, [refs]);
+
+  return targetRef;
+}
+
 export const Toast: React.FC<ToastProps> = ({
   message,
   id,
@@ -18,8 +33,8 @@ export const Toast: React.FC<ToastProps> = ({
   visible,
 }) => {
   const toastRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const animatingRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animatingRef = useRef<boolean>(false);
 
   const dismissToast = useCallback(() => {
     if (!animatingRef.current) {
