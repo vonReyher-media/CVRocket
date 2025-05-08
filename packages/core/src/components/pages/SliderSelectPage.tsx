@@ -1,15 +1,21 @@
 import { animate } from '@motionone/dom';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useCVRocket } from '../../providers/CVRocketProvider';
-import { EnhancedSlider } from '../base/enhanced-slider.tsx';
-import PageHeader, { PageHeaderProps } from '../base/pageHeaders.tsx';
-import { PageTemplate } from './index.ts';
-import { BaseTemplateProps } from './PageTemplate.tsx';
+import { Button } from '../base/button';
+import { EnhancedSlider } from '../base/enhanced-slider';
+import PageHeader, { PageHeaderProps } from '../base/pageHeaders';
+import { PageTemplate } from './index';
+import { BaseTemplateProps } from './PageTemplate';
+import { PageTemplateProps } from './PageTemplate.tsx';
 
-interface SliderSelectPageProps extends BaseTemplateProps {
-  title: string;
-  description?: string;
+interface AgbInfo {
+  text: string;
+  linkText: string;
+  linkHref: string;
+}
+
+interface SliderSelectPageProps extends Omit<BaseTemplateProps, 'agbInfo'> {
   datakey: string;
   min: number;
   max: number;
@@ -17,18 +23,23 @@ interface SliderSelectPageProps extends BaseTemplateProps {
   unit?: string;
   prefix?: string;
   suffix?: string;
-  className?: string;
   showValueLabel?: boolean;
+  showIncrementButtons?: boolean;
+  incrementStep?: number;
+  className?: string;
+  header?: Partial<PageHeaderProps>;
+  agbInfo: AgbInfo;
   autoAdvance?: boolean;
-  header: PageHeaderProps;
+  showAgb: boolean;
+  showBackButtonOnThisPage?: boolean;
+  showNextButtonOnThisPage?: boolean;
+  pageHeader?: PageHeaderProps;
 }
 
 /**
  * SliderSelectPage – A modern page with a single slider selection that optionally auto-advances.
  */
 export function SliderSelectPage({
-  title,
-  description,
   datakey,
   min,
   max,
@@ -37,13 +48,15 @@ export function SliderSelectPage({
   prefix = '',
   suffix = '',
   showValueLabel = true,
+  showIncrementButtons = false,
+  incrementStep = 1,
   showAgb,
   agbInfo,
   showBackButtonOnThisPage = true,
   showNextButtonOnThisPage = true,
   autoAdvance = false,
   className,
-  header,
+  pageHeader,
 }: SliderSelectPageProps) {
   const { updateFormData, data, currentStep, totalSteps, currentPageConfig } =
     useCVRocket();
@@ -94,6 +107,14 @@ export function SliderSelectPage({
       const percentage = ((val - min) / (max - min)) * 100;
       progressBarRef.current.style.width = `${percentage}%`;
     }
+  };
+
+  const handleIncrement = (amount: number) => {
+    if (value === null) return;
+    const newValue = Math.min(Math.max(value + amount, min), max);
+    setValue(newValue);
+    setWasManuallyChanged(true);
+    updateFormData({ [datakey]: newValue });
   };
 
   const isFormValid = typeof value === 'number';
@@ -155,7 +176,7 @@ export function SliderSelectPage({
       showBackButtonOnThisPage={showBackButtonOnThisPage}
       isFormValid={isFormValid}
     >
-      <PageHeader {...header} />
+      {pageHeader && <PageHeader {...pageHeader} />}
       <div className="slider-page-content w-full">
         <div className={`w-full flex flex-col items-center ${className ?? ''}`}>
           {showValueLabel && typeof value === 'number' && (
@@ -170,38 +191,56 @@ export function SliderSelectPage({
           )}
 
           <div className="w-full max-w-xl px-4 md:px-0">
-            {/*<div className="relative mb-2">*/}
-            {/*    <div className="absolute top-0 left-0 right-0 h-1 bg-gray-200 rounded-full">*/}
-            {/*        <div*/}
-            {/*            ref={progressBarRef}*/}
-            {/*            className="h-full bg-primary rounded-full"*/}
-            {/*            style={{ width: `${percentage}%` }}*/}
-            {/*        />*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            <div className="flex items-center gap-4">
+              {showIncrementButtons && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleIncrement(-incrementStep)}
+                  disabled={value === null || value <= min}
+                  className="h-10 w-10 shrink-0"
+                >
+                  -
+                </Button>
+              )}
 
-            <EnhancedSlider
-              min={min}
-              max={max}
-              step={step}
-              value={value ?? min}
-              onChange={handleChange}
-              onDrag={handleDrag}
-            />
+              <div className="flex-1">
+                <EnhancedSlider
+                  min={min}
+                  max={max}
+                  step={step}
+                  value={value ?? min}
+                  onChange={handleChange}
+                  onDrag={handleDrag}
+                />
 
-            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span>
-                {prefix}
-                {min}
-                {unit}
-                {suffix}
-              </span>
-              <span>
-                {prefix}
-                {max}
-                {unit}
-                {suffix}
-              </span>
+                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                  <span>
+                    {prefix}
+                    {min}
+                    {unit}
+                    {suffix}
+                  </span>
+                  <span>
+                    {prefix}
+                    {max}
+                    {unit}
+                    {suffix}
+                  </span>
+                </div>
+              </div>
+
+              {showIncrementButtons && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleIncrement(incrementStep)}
+                  disabled={value === null || value >= max}
+                  className="h-10 w-10 shrink-0"
+                >
+                  +
+                </Button>
+              )}
             </div>
           </div>
         </div>

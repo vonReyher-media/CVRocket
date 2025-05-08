@@ -72,6 +72,13 @@ export interface PageTemplateProps extends BaseTemplateProps {
    * @default true
    */
   isFormValid?: boolean;
+
+  /**
+   * Optional condition that determines whether the page content should be rendered.
+   * Can be a boolean value or a function that returns a boolean.
+   * If not provided, the page will always render.
+   */
+  renderCondition?: boolean | (() => boolean);
 }
 
 type PageConfigRef = {
@@ -96,6 +103,7 @@ const PageTemplate = ({
   className,
   isFormValid = true,
   animationDuration = 400,
+  renderCondition = true,
 }: PageTemplateProps) => {
   const {
     currentStep,
@@ -225,6 +233,14 @@ const PageTemplate = ({
     setIsAgbAccepted(checked);
     updateFormData({ [`agb_accepted_page_${currentStep}`]: checked });
   };
+
+  // Check if the page should be rendered
+  const shouldRender =
+    typeof renderCondition === 'function' ? renderCondition() : renderCondition;
+
+  if (!shouldRender) {
+    return null;
+  }
 
   return (
     <div className="overflow-hidden py-3">

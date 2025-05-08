@@ -12,7 +12,6 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "noEmit": true,
-    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,

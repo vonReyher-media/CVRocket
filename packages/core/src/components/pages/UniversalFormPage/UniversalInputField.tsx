@@ -32,7 +32,14 @@ export function UniversalInputField({
       placeholder={placeholder}
       error={error}
       className={className}
-      {...register(name)}
+      {...register(name, {
+        setValueAs: (value) => {
+          if (type === 'number') {
+            return value === '' ? undefined : Number(value);
+          }
+          return value;
+        },
+      })}
     />
   );
 }

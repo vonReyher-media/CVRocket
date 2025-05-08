@@ -115,6 +115,34 @@ function ExampleForm() {
 - **AGB Checkbox** optional pro Page
 - **Persistente Speicherung** lokal
 - **Auto-Next**, Button-Footer, Toast-System
+- **Bedingtes Rendering** für dynamische Seiten
+
+### 🔄 Bedingtes Rendering
+
+CVRocket unterstützt bedingtes Rendering von Seiten basierend auf Formulardaten oder anderen Bedingungen:
+
+```tsx
+// Einfache Boolean-Bedingung
+<PageTemplate renderCondition={someBooleanValue}>
+  <YourContent />
+</PageTemplate>
+
+// Dynamische Bedingung mit Funktion
+<PageTemplate
+  renderCondition={() => {
+    const { data } = useCVRocket();
+    return data.someField === 'expectedValue';
+  }}
+>
+  <YourContent />
+</PageTemplate>
+```
+
+Die `renderCondition` Property kann entweder:
+
+- Ein Boolean-Wert sein
+- Eine Funktion, die einen Boolean zurückgibt
+- Optional sein (Standard: `true`)
 
 ### 📊 Tracking Events
 
