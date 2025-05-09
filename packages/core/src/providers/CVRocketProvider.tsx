@@ -200,13 +200,16 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   useEffect(() => {
     onStart?.();
     onStepChange?.(0);
+  }, []);
+
+  useEffect(() => {
     const unsubscribeNext = subscribe('next_step', handleNextStep);
     const unsubscribePrev = subscribe('previous_step', handlePreviousStep);
     return () => {
       unsubscribeNext();
       unsubscribePrev();
     };
-  }, [handleNextStep, handlePreviousStep, onStart, onStepChange, subscribe]);
+  }, [handleNextStep, handlePreviousStep, subscribe]);
 
   const updatePageConfig = useCallback((step: number, config: PageConfig) => {
     setPageConfigs((prev) => {
