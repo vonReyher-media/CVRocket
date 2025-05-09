@@ -209,14 +209,19 @@ const App = () => {
             />
           </OneSelectPage>
           <SliderSelectPage
-            title={'Wie viel Euro gibt du pro Monat aus?'}
             datakey={'testslider'}
             min={100}
             max={1000}
             suffix={'$'}
             showBackButtonOnThisPage={false}
+            showAgb={true}
+            agbInfo={{
+              text: 'I agree to the terms and conditions',
+              linkText: 'Read more',
+              linkHref: '#',
+            }}
             header={{
-              title: 'Test',
+              title: 'Wie viel Euro gibt du pro Monat aus?',
               text_alignment: 'center',
               description:
                 'Seit über 10 Jahren ist der App Store ein sicherer und vertrauenswürdiger Ort, um Apps zu entdecken und zu laden. Aber der App Store ist mehr als ein Schau­fenster.',
