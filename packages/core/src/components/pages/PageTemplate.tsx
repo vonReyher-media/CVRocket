@@ -119,15 +119,29 @@ const PageTemplate = ({
   const [isAgbAccepted, setIsAgbAccepted] = useState<boolean>(false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
+  const [showAgbError, setShowAgbError] = useState(false);
 
   // Load AGB checkbox state from shared form data
   useEffect(() => {
     const agbAccepted = data[`agb_accepted_page_${currentStep}`] === true;
     setIsAgbAccepted(agbAccepted);
+    setShowAgbError(false);
   }, [currentStep, data]);
 
   // Navigate forward with exit animation
   const goToNextStep = useCallback(async () => {
+    if (showAgb && !isAgbAccepted) {
+      setShowAgbError(true);
+      if (agbRef.current) {
+        await animate(
+          agbRef.current,
+          { x: [0, -5, 5, -5, 5, 0] },
+          { duration: 0.5, easing: 'ease-in-out' },
+        );
+      }
+      return;
+    }
+
     setDirection('forward');
     setIsAnimatingOut(true);
 
@@ -148,7 +162,7 @@ const PageTemplate = ({
 
     originalGoToNextStep();
     setIsAnimatingOut(false);
-  }, [originalGoToNextStep, animationDuration]);
+  }, [originalGoToNextStep, animationDuration, showAgb, isAgbAccepted, agbRef]);
 
   // Navigate backward with exit animation
   const goToPreviousStep = useCallback(async () => {
@@ -230,6 +244,7 @@ const PageTemplate = ({
   // Handle AGB checkbox updates
   const handleAgbChange = (checked: boolean) => {
     setIsAgbAccepted(checked);
+    setShowAgbError(false);
     updateFormData({ [`agb_accepted_page_${currentStep}`]: checked });
   };
 
@@ -245,7 +260,7 @@ const PageTemplate = ({
     <div className="overflow-hidden py-3">
       <Progress current={currentStep + 1} total={totalSteps} />
 
-      <div ref={contentRef} className={cn('relative', className)}>
+      <div ref={contentRef} className={cn('relative px-2', className)}>
         {children}
 
         {showAgb && (
@@ -257,6 +272,11 @@ const PageTemplate = ({
               label={agbInfo?.text || 'I accept the Terms and Conditions'}
               linkHref={agbInfo?.linkHref}
               linkText={agbInfo?.linkText}
+              error={
+                showAgbError
+                  ? 'Bitte akzeptieren Sie die AGBs, um fortzufahren.'
+                  : undefined
+              }
             />
           </div>
         )}

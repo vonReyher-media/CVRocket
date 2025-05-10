@@ -12,6 +12,7 @@ export interface CheckboxWithLabelProps
   linkText?: string;
   linkHref?: string;
   containerProps?: HTMLAttributes<HTMLLabelElement>;
+  error?: string;
 }
 
 // Optional: eigene Checkbox-Variants, falls du unterschiedliche Varianten möchtest
@@ -23,6 +24,8 @@ const checkboxWithLabelVariants = cva(
         default: 'border-border hover:bg-muted bg-background text-foreground',
         outline:
           'border-muted-foreground hover:bg-accent bg-background text-foreground',
+        error:
+          'border-destructive hover:bg-destructive/5 bg-destructive/5 text-foreground',
       },
     },
     defaultVariants: {
@@ -44,37 +47,44 @@ export const CheckboxWithLabel = forwardRef<
       linkText,
       linkHref,
       containerProps = {},
+      error,
       ...checkboxProps
     },
     ref,
   ) => {
     return (
-      <label
-        htmlFor={id}
-        className={cn(checkboxWithLabelVariants(), className)}
-        {...containerProps}
-      >
-        <Checkbox
-          ref={ref}
-          id={id}
-          className={checkboxClassName}
-          {...checkboxProps}
-        />
-        <div className="text-sm text-muted-foreground select-none">
-          {label}
-          {linkText && linkHref && (
-            <a
-              href={linkHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 ml-1 underline underline-offset-2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {linkText}
-            </a>
+      <div className="space-y-1">
+        <label
+          htmlFor={id}
+          className={cn(
+            checkboxWithLabelVariants({ variant: error ? 'error' : 'default' }),
+            className,
           )}
-        </div>
-      </label>
+          {...containerProps}
+        >
+          <Checkbox
+            ref={ref}
+            id={id}
+            className={checkboxClassName}
+            {...checkboxProps}
+          />
+          <div className="text-sm text-muted-foreground select-none">
+            {label}
+            {linkText && linkHref && (
+              <a
+                href={linkHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 ml-1 underline underline-offset-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {linkText}
+              </a>
+            )}
+          </div>
+        </label>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+      </div>
     );
   },
 );

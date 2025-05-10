@@ -88,12 +88,7 @@ export function MultiSelectPage({
         isFormValid={formValid}
       >
         {header && <PageHeader {...header} />}
-        <div
-          className={cn(
-            'gap-4',
-            className || 'grid grid-cols-2 md:grid-cols-3',
-          )}
-        >
+        <div className={cn('gap-4 grid grid-cols-2 md:grid-cols-4', className)}>
           {children}
         </div>
         {minRequired > 0 && selectedValues.size < minRequired && (

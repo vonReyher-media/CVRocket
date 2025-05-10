@@ -2,6 +2,7 @@ import {
   CVRocketProvider,
   EmptyPage,
   MultiSelectionItemCard,
+  MultiSelectionItemLine,
   MultiSelectPage,
   OneSelectionItemCard,
   OneSelectionItemLine,
@@ -251,7 +252,7 @@ const App = () => {
             min={100}
             max={1000}
             suffix={'$'}
-            showBackButtonOnThisPage={false}
+            showIncrementButtons={true}
             showAgb={true}
             agbInfo={{
               text: 'I agree to the terms and conditions',
@@ -265,6 +266,395 @@ const App = () => {
                 'Seit über 10 Jahren ist der App Store ein sicherer und vertrauenswürdiger Ort, um Apps zu entdecken und zu laden. Aber der App Store ist mehr als ein Schau­fenster.',
             }}
           />
+
+          {/* Branchenauswahl */}
+          <OneSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <OneSelectionItemLine
+              icon="🏭"
+              label="Industrie & Produktion"
+              value="industry"
+            />
+            <OneSelectionItemLine icon="💻" label="IT & Software" value="it" />
+            <OneSelectionItemLine
+              icon="🏥"
+              label="Gesundheitswesen"
+              value="healthcare"
+            />
+            <OneSelectionItemLine
+              icon="🏗️"
+              label="Bau & Handwerk"
+              value="construction"
+            />
+            <OneSelectionItemLine
+              icon="🚗"
+              label="Automobil"
+              value="automotive"
+            />
+            <OneSelectionItemLine
+              icon="🏪"
+              label="Handel & Einzelhandel"
+              value="retail"
+            />
+            <OneSelectionItemLine
+              icon="🏢"
+              label="Dienstleistungen"
+              value="services"
+            />
+            <OneSelectionItemLine
+              icon="📦"
+              label="Logistik & Transport"
+              value="logistics"
+            />
+            <OneSelectionItemLine
+              icon="🏛️"
+              label="Öffentlicher Sektor"
+              value="public"
+            />
+            <OneSelectionItemLine
+              icon="🏦"
+              label="Banken & Finanzen"
+              value="finance"
+            />
+            <OneSelectionItemLine
+              icon="🎓"
+              label="Bildung & Forschung"
+              value="education"
+            />
+            <OneSelectionItemLine
+              icon="🏨"
+              label="Gastgewerbe & Tourismus"
+              value="hospitality"
+            />
+            <OneSelectionItemLine
+              icon="📱"
+              label="Telekommunikation"
+              value="telecom"
+            />
+            <OneSelectionItemLine
+              icon="🔬"
+              label="Chemie & Pharma"
+              value="chemical"
+            />
+            <OneSelectionItemLine
+              icon="⚡"
+              label="Energie & Versorgung"
+              value="energy"
+            />
+            <OneSelectionItemLine icon="❓" label="Sonstige" value="other" />
+          </OneSelectPage>
+
+          <OneSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏭"
+              label="Industrie & Produktion"
+              value="industry"
+            />
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="💻"
+              label="IT & Software"
+              value="it"
+            />
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏥"
+              label="Gesundheitswesen"
+              value="healthcare"
+            />
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏗️"
+              label="Bau & Handwerk"
+              value="construction"
+            />
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🚗"
+              label="Automobil"
+              value="automotive"
+            />
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏪"
+              label="Handel & Einzelhandel"
+              value="retail"
+            />
+            <OneSelectionItemLine
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏢"
+              label="Dienstleistungen"
+              value="services"
+            />
+          </OneSelectPage>
+
+          <OneSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏭"
+              label="Industrie & Produktion"
+              value="industry"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="💻"
+              label="IT & Software"
+              value="it"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏥"
+              label="Gesundheitswesen"
+              value="healthcare"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏗️"
+              label="Bau & Handwerk"
+              value="construction"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🚗"
+              label="Automobil"
+              value="automotive"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏪"
+              label="Handel & Einzelhandel"
+              value="retail"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏢"
+              label="Dienstleistungen"
+              value="services"
+            />
+          </OneSelectPage>
+
+          <OneSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <OneSelectionItemCard
+              imageUrl="https://picsum.photos/200/300"
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏭"
+              label="Industrie & Produktion"
+              value="industry"
+            />
+            <OneSelectionItemCard
+              imageUrl="https://picsum.photos/200/300"
+              description="Industrie & Produktion is a good industry to work in"
+              icon="💻"
+              label="IT & Software"
+              value="it"
+            />
+            <OneSelectionItemCard
+              imageUrl="https://picsum.photos/200/300"
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏥"
+              label="Gesundheitswesen"
+              value="healthcare"
+            />
+            <OneSelectionItemCard
+              imageUrl="https://picsum.photos/200/300"
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏗️"
+              label="Bau & Handwerk"
+              value="construction"
+            />
+            <OneSelectionItemCard
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🚗"
+              label="Automobil"
+              value="automotive"
+            />
+            <OneSelectionItemCard
+              imageUrl="https://picsum.photos/200/300"
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏪"
+              label="Handel & Einzelhandel"
+              value="retail"
+            />
+            <OneSelectionItemCard
+              imageUrl="https://picsum.photos/200/300"
+              description="Industrie & Produktion is a good industry to work in"
+              icon="🏢"
+              label="Dienstleistungen"
+              value="services"
+            />
+          </OneSelectPage>
+
+          <MultiSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <MultiSelectionItemLine
+              icon="🏭"
+              label={'Industrie & Produktion'}
+              value={'tem'}
+            />
+            <MultiSelectionItemLine
+              icon="🏭"
+              label={'Industrie & Produktion'}
+              value={'asddf'}
+            />
+            <MultiSelectionItemLine
+              icon="🏭"
+              label={'Industrie & Produktion'}
+              value={'assssdf'}
+            />
+            <MultiSelectionItemLine
+              icon="🏭"
+              label={'Industrie & Produktion'}
+              value={'aseeeeeeedf'}
+            />
+            <MultiSelectionItemLine
+              icon="🏭"
+              label={'Industrie & Produktion'}
+              value={'aswtdf'}
+            />
+          </MultiSelectPage>
+
+          <MultiSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <MultiSelectionItemLine
+              icon="🏭"
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'tem'}
+            />
+            <MultiSelectionItemLine
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'asddf'}
+            />
+            <MultiSelectionItemLine
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'assssdf'}
+            />
+            <MultiSelectionItemLine
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'aseeeeeeedf'}
+            />
+            <MultiSelectionItemLine
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'aswtdf'}
+            />
+          </MultiSelectPage>
+
+          <MultiSelectPage
+            header={{
+              title: 'Branche',
+              description: 'In welcher Branche ist Ihr Unternehmen tätig?',
+            }}
+            datakey="industry"
+          >
+            <MultiSelectionItemCard
+              icon="🏭"
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'tem'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Household & Produktion'}
+              value={'temee'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              icon="🏭"
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'tem'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Household & Produktion'}
+              value={'temee'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              icon="🏭"
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Industrie & Produktion'}
+              value={'tem'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'Household & Produktion'}
+              value={'temee'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              description={
+                'Industrie & Produktion is a good industry to work in'
+              }
+              label={'test'}
+              value={'temedde'}
+              icon={<CommandIcon />}
+            />
+          </MultiSelectPage>
+
           <UniversalFormPage
             header={{
               title:
