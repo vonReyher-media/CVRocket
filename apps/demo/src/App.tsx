@@ -51,19 +51,29 @@ const App = () => {
               );
             }
           }}
+          loadingComponent={
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-lg text-muted-foreground">
+                  Wird gesendet...
+                </p>
+              </div>
+            </div>
+          }
           fullScreenLayout={{
             // logo: 'https://www.cvrocket.com/wp-content/uploads/2023/09/cvrocket-logo.svg',
             // logoHref: 'https://www.cvrocket.com/',
             brandName: 'CVRocket',
-            drawerInformation: {
-              title: 'Information',
-              description: 'Hier sind einige Informationen zu diesem Formular.',
-              drawerContent: (
-                <div>
-                  <p>Hier ist der Inhalt des Drawers.</p>
-                </div>
-              ),
-            },
+            // drawerInformation: {
+            //   title: 'Information',
+            //   description: 'Hier sind einige Informationen zu diesem Formular.',
+            //   drawerContent: (
+            //     <div>
+            //       <p>Hier ist der Inhalt des Drawers.</p>
+            //     </div>
+            //   ),
+            // },
           }}
           // persistData={true}
           // warnBeforeUnload={true}
@@ -93,7 +103,35 @@ const App = () => {
               </div>
             </div>
           </EmptyPage>
+
           <MultiSelectPage
+            header={{
+              title: 'Test',
+              description: 'test',
+            }}
+            datakey="test1"
+            renderCondition={() => {
+              return false;
+            }}
+          >
+            <MultiSelectionItemCard
+              label={'Ich fühle mich schlapp'}
+              value={'test'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              label={'Ich fühle mich nicht schlapp'}
+              value={'tom'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+            <MultiSelectionItemCard
+              label={'keine Ahnung'}
+              value={'hallo'}
+              imageUrl={'https://picsum.photos/200/300'}
+            />
+          </MultiSelectPage>
+
+          {/* <MultiSelectPage
             header={{
               title: 'Test',
               description:
@@ -207,7 +245,7 @@ const App = () => {
               icon={<CommandIcon />}
               imageUrl={'https://picsum.photos/200/300'}
             />
-          </OneSelectPage>
+          </OneSelectPage> */}
           <SliderSelectPage
             datakey={'testslider'}
             min={100}

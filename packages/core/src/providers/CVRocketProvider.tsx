@@ -111,6 +111,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   const [pageConfigs, setPageConfigs] = useState<PageConfig[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const totalSteps = Children.count(children);
 
   const eventListenersRef = useRef<GenericListenerMap>({});
@@ -157,6 +158,25 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     },
     [children],
   );
+
+  // Finde den ersten sichtbaren Schritt
+  const findFirstVisibleStep = useCallback(() => {
+    let step = 0;
+    while (step < totalSteps - 1 && !shouldRenderPage(step)) {
+      step++;
+    }
+    return step;
+  }, [totalSteps, shouldRenderPage]);
+
+  useEffect(() => {
+    if (!hasStarted) {
+      const firstVisibleStep = findFirstVisibleStep();
+      setCurrentStep(firstVisibleStep);
+      setHasStarted(true);
+      onStart?.();
+      onStepChange?.(firstVisibleStep);
+    }
+  }, [hasStarted, findFirstVisibleStep, onStart, onStepChange]);
 
   // Finde den nächsten sichtbaren Schritt
   const findNextVisibleStep = useCallback(
@@ -234,15 +254,13 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   }, [data, onComplete, onError]);
 
   useEffect(() => {
-    onStart?.();
-    onStepChange?.(0);
     const unsubscribeNext = subscribe('next_step', handleNextStep);
     const unsubscribePrev = subscribe('previous_step', handlePreviousStep);
     return () => {
       unsubscribeNext();
       unsubscribePrev();
     };
-  }, [handleNextStep, handlePreviousStep, onStart, onStepChange, subscribe]);
+  }, [handleNextStep, handlePreviousStep, subscribe]);
 
   const updatePageConfig = useCallback((step: number, config: PageConfig) => {
     setPageConfigs((prev) => {
