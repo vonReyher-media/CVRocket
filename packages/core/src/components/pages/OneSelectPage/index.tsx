@@ -45,14 +45,20 @@ export function OneSelectPage({
   header,
   children,
   datakey,
-  showBackButtonOnThisPage,
+  showBackButtonOnThisPage = true,
   showNextButtonOnThisPage = false,
   showAgb,
   agbInfo,
   className,
 }: OneSelectPageProps) {
-  const { updateFormData, data, currentStep, totalSteps, currentPageConfig } =
-    useCVRocket();
+  const {
+    updateFormData,
+    data,
+    currentStep,
+    totalSteps,
+    currentPageConfig,
+    setCurrentPageConfig,
+  } = useCVRocket();
 
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [wasManuallySelected, setWasManuallySelected] = useState(false);
@@ -79,7 +85,8 @@ export function OneSelectPage({
     if (
       !selectedValue ||
       currentStep === totalSteps - 1 ||
-      !wasManuallySelected
+      !wasManuallySelected ||
+      showNextButtonOnThisPage
     )
       return;
 
@@ -100,6 +107,7 @@ export function OneSelectPage({
     data,
     currentStep,
     totalSteps,
+    showNextButtonOnThisPage,
   ]);
 
   const isFormValid = Boolean(selectedValue);

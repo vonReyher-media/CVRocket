@@ -263,6 +263,8 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   }, [handleNextStep, handlePreviousStep, subscribe]);
 
   const updatePageConfig = useCallback((step: number, config: PageConfig) => {
+    console.log('CVRocketProvider - Updating page config for step:', step);
+    console.log('CVRocketProvider - New config:', config);
     setPageConfigs((prev) => {
       const updated = [...prev];
       updated[step] = config;
@@ -272,6 +274,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
 
   const setCurrentPageConfig = useCallback(
     (config: PageConfig) => {
+      console.log('CVRocketProvider - Setting current page config:', config);
       updatePageConfig(currentStep, config);
     },
     [currentStep, updatePageConfig],
@@ -399,7 +402,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
               </div>
 
               {/* Fixierte Button-Leiste unten */}
-              {!isCompleted && pageConfigs[currentStep]?.showNextButton && (
+              {!isCompleted && (
                 <div className="shrink-0 w-full py-5 bg-background px-10">
                   <ButtonFooter
                     currentStep={currentStep}

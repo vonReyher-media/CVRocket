@@ -193,17 +193,23 @@ const PageTemplate = ({
 
   useEffect(() => {
     const newConfig = {
-      showNextButton: showNextButtonOnThisPage ?? true,
-      showBackButton: showBackButtonOnThisPage ?? true,
+      showNextButton: showNextButtonOnThisPage,
+      showBackButton: showBackButtonOnThisPage,
       agbRequired: showAgb,
       isFormValid,
       goToNextStep,
       goToPreviousStep,
     };
 
+    console.log('PageTemplate - newConfig:', newConfig);
+    console.log('PageTemplate - lastConfig:', lastConfigRef.current);
+
     if (!deepEqual(lastConfigRef.current, newConfig)) {
+      console.log('PageTemplate - Config changed, updating...');
       lastConfigRef.current = newConfig;
       setCurrentPageConfig(newConfig);
+    } else {
+      console.log('PageTemplate - Config unchanged');
     }
   }, [
     setCurrentPageConfig,
@@ -213,7 +219,7 @@ const PageTemplate = ({
     goToPreviousStep,
     showNextButtonOnThisPage,
     showBackButtonOnThisPage,
-    currentStep, // optional
+    currentStep,
   ]);
 
   // Animate content entry when step changes

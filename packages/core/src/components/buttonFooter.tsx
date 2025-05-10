@@ -29,8 +29,6 @@ export const ButtonFooter: FC<ButtonFooterProps> = ({
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
 
-  console.log(currentPageConfig);
-
   const agbRequired = currentPageConfig?.agbRequired === true;
   const agbAccepted = data[`agb_accepted_page_${currentStep}`] === true;
   const isFormValid = currentPageConfig?.isFormValid ?? false;

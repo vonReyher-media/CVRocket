@@ -265,6 +265,8 @@ const App = () => {
               description:
                 'Seit über 10 Jahren ist der App Store ein sicherer und vertrauenswürdiger Ort, um Apps zu entdecken und zu laden. Aber der App Store ist mehr als ein Schau­fenster.',
             }}
+            // showBackButtonOnThisPage={false}
+            // showNextButtonOnThisPage={false}
           />
 
           {/* Branchenauswahl */}
@@ -355,6 +357,8 @@ const App = () => {
               description: 'In welcher Branche ist Ihr Unternehmen tätig?',
             }}
             datakey="industry"
+            showBackButtonOnThisPage={true}
+            showNextButtonOnThisPage={true}
           >
             <OneSelectionItemLine
               description="Industrie & Produktion is a good industry to work in"
