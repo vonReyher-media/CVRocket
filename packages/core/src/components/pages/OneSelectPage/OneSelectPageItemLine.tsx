@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import { cn } from '../../../utils/utils';
 import { useOneSelectContext } from './index';
+import { TypingTextProps } from 'src/components/base/typing_alert';
 
 interface OneSelectionItemLineProps {
   value: string;
@@ -9,6 +10,7 @@ interface OneSelectionItemLineProps {
   description?: string;
   icon?: ReactNode;
   className?: string;
+  animated_description_text?: TypingTextProps;
 }
 
 /**
@@ -20,6 +22,7 @@ export function OneSelectionItemLine({
   description,
   icon,
   className,
+  animated_description_text,
 }: OneSelectionItemLineProps) {
   const { selectedValue, selectValue } = useOneSelectContext();
   const isSelected = selectedValue === value;

@@ -4,6 +4,9 @@ import {
   useContext,
   useEffect,
   useState,
+  Children,
+  cloneElement,
+  isValidElement,
 } from 'react';
 
 import { useCVRocket } from '../../../providers/CVRocketProvider';
@@ -11,6 +14,7 @@ import { cn } from '../../../utils/utils';
 import pageHeaders, { PageHeaderProps } from '../../base/pageHeaders';
 import PageHeader from '../../base/pageHeaders.tsx';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
+import { TypingText, type TypingTextProps } from '../../base/typing_alert';
 
 interface OneSelectionContextType {
   selectedValue: string | null;
@@ -46,7 +50,7 @@ export function OneSelectPage({
   children,
   datakey,
   showBackButtonOnThisPage = true,
-  showNextButtonOnThisPage = false,
+  showNextButtonOnThisPage: initialShowNextButton = false,
   showAgb,
   agbInfo,
   className,
@@ -62,6 +66,27 @@ export function OneSelectPage({
 
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [wasManuallySelected, setWasManuallySelected] = useState(false);
+  const [animatedTextProps, setAnimatedTextProps] = useState<
+    (Omit<TypingTextProps, 'icon'> & { icon?: ReactNode }) | null
+  >(null);
+  const [hasAnimatedItems, setHasAnimatedItems] = useState(false);
+  const [showNextButtonOnThisPage, setShowNextButtonOnThisPage] = useState(
+    initialShowNextButton,
+  );
+
+  // Check if any child has animated_description_text
+  useEffect(() => {
+    const hasAnimated = Children.toArray(children).some(
+      (child) =>
+        isValidElement(child) &&
+        'animated_description_text' in child.props &&
+        child.props.animated_description_text,
+    );
+    setHasAnimatedItems(hasAnimated);
+    if (hasAnimated) {
+      setShowNextButtonOnThisPage(true);
+    }
+  }, [children]);
 
   // Restore selection from data
   useEffect(() => {
@@ -78,6 +103,30 @@ export function OneSelectPage({
     setWasManuallySelected(true);
     setSelectedValue(value);
     updateFormData({ [datakey]: value });
+
+    // Find and set animated text props for selected item
+    const selectedChild = Children.toArray(children).find(
+      (child) =>
+        isValidElement(child) &&
+        child.props.value === value &&
+        'animated_description_text' in child.props,
+    );
+
+    if (selectedChild && isValidElement(selectedChild)) {
+      const props = selectedChild.props.animated_description_text;
+      if (props) {
+        // Extract icon from props and pass it separately
+        const { icon, ...restProps } = props;
+        setAnimatedTextProps({
+          ...restProps,
+          icon: icon as ReactNode,
+        });
+      } else {
+        setAnimatedTextProps(null);
+      }
+    } else {
+      setAnimatedTextProps(null);
+    }
   };
 
   // Auto-advance to next step if form is valid and AGB accepted
@@ -122,6 +171,13 @@ export function OneSelectPage({
         isFormValid={isFormValid}
       >
         {header && <PageHeader {...header} />}
+
+        {hasAnimatedItems && animatedTextProps && (
+          <div className="mb-6">
+            <TypingText {...animatedTextProps} />
+          </div>
+        )}
+
         <div className={cn('gap-4 grid grid-cols-2 md:grid-cols-4', className)}>
           {children}
         </div>

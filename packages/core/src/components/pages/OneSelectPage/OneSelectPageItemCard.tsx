@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import { cn } from '../../../utils/utils';
 import { useOneSelectContext } from './index';
+import { TypingTextProps } from 'src/components/base/typing_alert';
 
 interface OneSelectionItemCardProps {
   value: string;
@@ -10,6 +11,7 @@ interface OneSelectionItemCardProps {
   icon?: ReactNode;
   imageUrl?: string;
   className?: string;
+  animated_description_text?: TypingTextProps;
 }
 
 /**
@@ -22,6 +24,7 @@ export function OneSelectionItemCard({
   icon,
   imageUrl,
   className,
+  animated_description_text,
 }: OneSelectionItemCardProps) {
   const { selectedValue, selectValue } = useOneSelectContext();
   const isSelected = selectedValue === value;

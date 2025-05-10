@@ -281,12 +281,22 @@ const App = () => {
               icon="🏭"
               label="Industrie & Produktion"
               value="industry"
+              animated_description_text={{
+                text: 'Industrie & Produktion is a good industry to work in',
+                icon: <CommandIcon />,
+                iconClassName: 'text-primary',
+              }}
             />
             <OneSelectionItemLine icon="💻" label="IT & Software" value="it" />
             <OneSelectionItemLine
               icon="🏥"
               label="Gesundheitswesen"
               value="healthcare"
+              animated_description_text={{
+                text: 'Many People are working in this industry, if you are interested in this industry, you can apply for this industry',
+                icon: <CommandIcon />,
+                iconClassName: 'text-primary',
+              }}
             />
             <OneSelectionItemLine
               icon="🏗️"
