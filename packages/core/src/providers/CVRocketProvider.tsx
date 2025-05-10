@@ -144,16 +144,54 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     [],
   );
 
+  // Funktion zum Überprüfen, ob eine Seite gerendert werden soll
+  const shouldRenderPage = useCallback(
+    (step: number) => {
+      const child = Children.toArray(children)[step];
+      if (!isValidElement(child)) return true;
+
+      const renderCondition = child.props.renderCondition;
+      return typeof renderCondition === 'function'
+        ? renderCondition()
+        : (renderCondition ?? true);
+    },
+    [children],
+  );
+
+  // Finde den nächsten sichtbaren Schritt
+  const findNextVisibleStep = useCallback(
+    (current: number) => {
+      let nextStep = current + 1;
+      while (nextStep < totalSteps - 1 && !shouldRenderPage(nextStep)) {
+        nextStep++;
+      }
+      return nextStep;
+    },
+    [totalSteps, shouldRenderPage],
+  );
+
+  // Finde den vorherigen sichtbaren Schritt
+  const findPreviousVisibleStep = useCallback(
+    (current: number) => {
+      let prevStep = current - 1;
+      while (prevStep > 0 && !shouldRenderPage(prevStep)) {
+        prevStep--;
+      }
+      return prevStep;
+    },
+    [shouldRenderPage],
+  );
+
   const handleNextStep = useCallback(
     async (stepData?: FormData) => {
       try {
         if (stepData) updateFormData(stepData);
-        if (currentStep < totalSteps - 2) {
-          setCurrentStep((prev) => {
-            const newStep = prev + 1;
-            onStepChange?.(newStep);
-            return newStep;
-          });
+
+        const nextStep = findNextVisibleStep(currentStep);
+
+        if (nextStep < totalSteps - 1) {
+          setCurrentStep(nextStep);
+          onStepChange?.(nextStep);
         } else {
           setIsCompleted(true);
           setIsSubmitting(true);
@@ -168,16 +206,22 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
         );
       }
     },
-    [currentStep, totalSteps, data, onComplete, onError, onStepChange],
+    [
+      currentStep,
+      totalSteps,
+      data,
+      onComplete,
+      onError,
+      onStepChange,
+      findNextVisibleStep,
+    ],
   );
 
   const handlePreviousStep = useCallback(() => {
-    setCurrentStep((prev) => {
-      const newStep = Math.max(0, prev - 1);
-      onStepChange?.(newStep);
-      return newStep;
-    });
-  }, [onStepChange]);
+    const prevStep = findPreviousVisibleStep(currentStep);
+    setCurrentStep(prevStep);
+    onStepChange?.(prevStep);
+  }, [currentStep, onStepChange, findPreviousVisibleStep]);
 
   const submitForm = useCallback(async () => {
     try {
@@ -220,6 +264,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     ? cloneElement(
         currentChild as React.ReactElement<{
           setPageConfig?: (config: PageConfig) => void;
+          renderCondition?: boolean | (() => boolean);
         }>,
         {
           setPageConfig: (config: PageConfig) =>
@@ -227,6 +272,13 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
         },
       )
     : currentChild;
+
+  // Check if the current page should be rendered
+  const shouldRenderCurrentPage =
+    isValidElement(currentChild) &&
+    (typeof currentChild.props.renderCondition === 'function'
+      ? currentChild.props.renderCondition()
+      : (currentChild.props.renderCondition ?? true));
 
   const contextValue: CVRocketContextValue = {
     currentStep,
@@ -317,7 +369,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                   )
                 ) : (
                   <div className="shrink-0 py-5 bg-background z-10 px-10">
-                    {enhancedChild}
+                    {shouldRenderCurrentPage && enhancedChild}
                     {pageConfigs[currentStep]?.showNextButton && (
                       <ButtonFooter
                         currentStep={currentStep}
@@ -341,7 +393,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                           </p>
                         </div>
                       ))
-                  : enhancedChild}
+                  : shouldRenderCurrentPage && enhancedChild}
               </div>
               {!isCompleted && (
                 <div className="w-full py-5 bg-background">

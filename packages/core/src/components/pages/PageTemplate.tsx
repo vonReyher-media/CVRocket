@@ -55,6 +55,12 @@ export interface BaseTemplateProps {
    * @default 400
    */
   animationDuration?: number;
+  /**
+   * Optional condition that determines whether the page content should be rendered.
+   * Can be a boolean value or a function that returns a boolean.
+   * If not provided, the page will always render.
+   */
+  renderCondition?: boolean | (() => boolean);
 }
 
 /**
@@ -72,13 +78,6 @@ export interface PageTemplateProps extends BaseTemplateProps {
    * @default true
    */
   isFormValid?: boolean;
-
-  /**
-   * Optional condition that determines whether the page content should be rendered.
-   * Can be a boolean value or a function that returns a boolean.
-   * If not provided, the page will always render.
-   */
-  renderCondition?: boolean | (() => boolean);
 }
 
 type PageConfigRef = {
