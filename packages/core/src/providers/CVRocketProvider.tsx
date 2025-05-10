@@ -67,7 +67,7 @@ interface CVRocketProviderProps {
   protectFormNavigation?: boolean;
   warnBeforeUnload?: boolean;
   persistData?: boolean;
-  fullScreenLayout: CVRocketFullscreenHeaderProps | null;
+  fullScreenLayout?: CVRocketFullscreenHeaderProps;
   className?: string;
   storageKey?: string;
 }
@@ -148,18 +148,18 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     async (stepData?: FormData) => {
       try {
         if (stepData) updateFormData(stepData);
-        if (currentStep < totalSteps - 1) {
+        if (currentStep < totalSteps - 2) {
           setCurrentStep((prev) => {
             const newStep = prev + 1;
             onStepChange?.(newStep);
             return newStep;
           });
         } else {
+          setIsCompleted(true);
           setIsSubmitting(true);
           await new Promise((res) => setTimeout(res, 600));
           await onComplete(data);
           setIsSubmitting(false);
-          if (enableThankYouPage) setIsCompleted(true);
         }
       } catch (error) {
         setIsSubmitting(false);
@@ -168,15 +168,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
         );
       }
     },
-    [
-      currentStep,
-      totalSteps,
-      data,
-      onComplete,
-      onError,
-      onStepChange,
-      enableThankYouPage,
-    ],
+    [currentStep, totalSteps, data, onComplete, onError, onStepChange],
   );
 
   const handlePreviousStep = useCallback(() => {
@@ -200,16 +192,13 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   useEffect(() => {
     onStart?.();
     onStepChange?.(0);
-  }, []);
-
-  useEffect(() => {
     const unsubscribeNext = subscribe('next_step', handleNextStep);
     const unsubscribePrev = subscribe('previous_step', handlePreviousStep);
     return () => {
       unsubscribeNext();
       unsubscribePrev();
     };
-  }, [handleNextStep, handlePreviousStep, subscribe]);
+  }, [handleNextStep, handlePreviousStep, onStart, onStepChange, subscribe]);
 
   const updatePageConfig = useCallback((step: number, config: PageConfig) => {
     setPageConfigs((prev) => {
@@ -291,7 +280,6 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
       window.removeEventListener('beforeunload', beforeUnloadHandler);
   }, [warnBeforeUnload]);
 
-  const showThankYou = isCompleted && enableThankYouPage;
   const thankYouStep = Children.toArray(children)[totalSteps] ?? null;
 
   return (
@@ -309,39 +297,53 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
             <div className="flex flex-col h-full">
               <FullScreenHeaderLayout {...fullScreenLayout} />
               <div className="flex-grow overflow-y-auto pt-6 container mx-auto px-5">
-                {isSubmitting
-                  ? (loadingComponent ?? (
+                {isCompleted ? (
+                  isSubmitting ? (
+                    (loadingComponent ?? (
                       <div className="text-center py-20">
                         <p className="text-lg text-muted-foreground animate-pulse">
                           Submitting...
                         </p>
                       </div>
                     ))
-                  : showThankYou
-                    ? thankYouStep
-                    : enhancedChild}
+                  ) : (
+                    (thankYouStep ?? (
+                      <div className="text-center py-20">
+                        <p className="text-lg text-muted-foreground animate-pulse">
+                          Thank you for your submission!
+                        </p>
+                      </div>
+                    ))
+                  )
+                ) : (
+                  <div className="shrink-0 py-5 bg-background z-10 px-10">
+                    {enhancedChild}
+                    {pageConfigs[currentStep]?.showNextButton && (
+                      <ButtonFooter
+                        currentStep={currentStep}
+                        totalSteps={totalSteps}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
-              {!isSubmitting && !showThankYou && (
-                <div className="shrink-0 py-5 bg-background z-10 px-10">
-                  {pageConfigs[currentStep]?.showNextButton && (
-                    <ButtonFooter
-                      currentStep={currentStep}
-                      totalSteps={totalSteps}
-                    />
-                  )}
-                </div>
-              )}
             </div>
           ) : (
             <div className="flex flex-col h-full justify-between w-full">
               <div className="flex-grow pt-6">
-                {isSubmitting
-                  ? loadingComponent
-                  : showThankYou
-                    ? thankYouStep
-                    : enhancedChild}
+                {isCompleted
+                  ? isSubmitting
+                    ? loadingComponent
+                    : (thankYouStep ?? (
+                        <div className="text-center py-20">
+                          <p className="text-lg text-muted-foreground animate-pulse">
+                            Thank you for your submission!
+                          </p>
+                        </div>
+                      ))
+                  : enhancedChild}
               </div>
-              {!isSubmitting && !showThankYou && (
+              {!isCompleted && (
                 <div className="w-full py-5 bg-background">
                   {pageConfigs[currentStep]?.showNextButton && (
                     <ButtonFooter

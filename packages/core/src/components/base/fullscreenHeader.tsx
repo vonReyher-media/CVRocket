@@ -50,9 +50,11 @@ export const FullScreenHeaderLayout: React.FC<
       <div className="flex-1 flex justify-center">{renderLogo()}</div>
       <Drawer.Root open={open} onOpenChange={setOpen}>
         <Drawer.Trigger asChild>
-          <Button size="icon" variant="outline">
-            <MoreHorizontal className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
-          </Button>
+          {drawerInformation && (
+            <Button size="icon" variant="outline">
+              <MoreHorizontal className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
+            </Button>
+          )}
         </Drawer.Trigger>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm dark:bg-white/40" />
