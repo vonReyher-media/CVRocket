@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@vonreyher-media/cvrocket';
 import { MoreHorizontal } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -46,7 +47,7 @@ export const FullScreenHeaderLayout: React.FC<
 
   return (
     <header className="w-full flex items-center justify-between px-4 py-3 pt-4 md:py-5 bg-background">
-      <div className="w-6 h-6" /> {/* Placeholder für linke Seite */}
+      {/* <div className="w-6 h-6" /> Placeholder für linke Seite */}
       <div className="flex-1 flex justify-center">{renderLogo()}</div>
       <Drawer.Root open={open} onOpenChange={setOpen}>
         <Drawer.Trigger asChild>

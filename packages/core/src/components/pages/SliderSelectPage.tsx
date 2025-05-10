@@ -8,6 +8,7 @@ import PageHeader, { PageHeaderProps } from '../base/pageHeaders';
 import { PageTemplate } from './index';
 import { BaseTemplateProps } from './PageTemplate';
 import { PageTemplateProps } from './PageTemplate.tsx';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 
 interface AgbInfo {
   text: string;
@@ -180,10 +181,10 @@ export function SliderSelectPage({
       <div className="slider-page-content w-full">
         <div className={`w-full flex flex-col items-center ${className ?? ''}`}>
           {showValueLabel && typeof value === 'number' && (
-            <div className="mb-8 text-center">
+            <div className="mb-8 text-center mt-10">
               <div
                 ref={valueDisplayRef}
-                className="text-5xl md:text-6xl font-bold text-primary"
+                className="text-5xl md:text-6xl font-bold text-primary whitespace-normal break-words"
               >
                 {formattedValue}
               </div>
@@ -200,11 +201,11 @@ export function SliderSelectPage({
                   disabled={value === null || value <= min}
                   className="h-10 w-10 shrink-0"
                 >
-                  -
+                  <MinusIcon className="w-4 h-4" />
                 </Button>
               )}
 
-              <div className="flex-1">
+              <div className="flex-1 pt-10">
                 <EnhancedSlider
                   min={min}
                   max={max}
@@ -236,9 +237,9 @@ export function SliderSelectPage({
                   size="icon"
                   onClick={() => handleIncrement(incrementStep)}
                   disabled={value === null || value >= max}
-                  className="h-10 w-10 shrink-0"
+                  // className="h-10 w-10 shrink-0"
                 >
-                  +
+                  <PlusIcon className="w-4 h-4" />
                 </Button>
               )}
             </div>

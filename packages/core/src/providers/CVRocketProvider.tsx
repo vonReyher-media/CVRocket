@@ -103,7 +103,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   enableThankYouPage = true,
   persistData = false,
   storageKey,
-  fullScreenLayout = null,
+  fullScreenLayout = undefined,
   className,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -364,9 +364,12 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
           )}
         >
           {fullScreenLayout ? (
-            <div className="flex flex-col h-full">
+            <div className="fixed inset-0 flex flex-col h-screen w-screen z-[9999] bg-background">
+              {/* Header immer sichtbar oben */}
               <FullScreenHeaderLayout {...fullScreenLayout} />
-              <div className="flex-grow overflow-y-auto pt-6 container mx-auto px-5">
+
+              {/* Scrollbarer Content */}
+              <div className="flex-grow overflow-y-auto pt-6 mx-auto px-5 container">
                 {isCompleted ? (
                   isSubmitting ? (
                     (loadingComponent ?? (
@@ -386,17 +389,24 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                     ))
                   )
                 ) : (
-                  <div className="shrink-0 py-5 bg-background z-10 px-10">
-                    {shouldRenderCurrentPage && enhancedChild}
-                    {pageConfigs[currentStep]?.showNextButton && (
-                      <ButtonFooter
-                        currentStep={currentStep}
-                        totalSteps={totalSteps}
-                      />
-                    )}
-                  </div>
+                  <>
+                    {/* Seiteninhalt */}
+                    <div className="shrink-0 py-5 bg-background z-10 ">
+                      {shouldRenderCurrentPage && enhancedChild}
+                    </div>
+                  </>
                 )}
               </div>
+
+              {/* Fixierte Button-Leiste unten */}
+              {!isCompleted && pageConfigs[currentStep]?.showNextButton && (
+                <div className="shrink-0 w-full py-5 bg-background px-10">
+                  <ButtonFooter
+                    currentStep={currentStep}
+                    totalSteps={totalSteps}
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex flex-col h-full justify-between w-full">
