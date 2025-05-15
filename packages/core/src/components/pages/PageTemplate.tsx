@@ -2,6 +2,7 @@ import { animate } from '@motionone/dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useCVRocket } from '../../providers/CVRocketProvider';
+import type { FormData } from '../../providers/CVRocketProvider';
 import { deepEqual } from '../../utils/deepEqual';
 import { cn } from '../../utils/utils';
 import { CheckboxWithLabel, Progress } from '../base';

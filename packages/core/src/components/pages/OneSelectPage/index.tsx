@@ -40,7 +40,6 @@ interface OneSelectPageProps extends BaseTemplateProps {
   header?: PageHeaderProps;
   children: ReactNode;
   datakey: string;
-  renderCondition?: (data: FormData) => boolean;
 }
 
 /**
@@ -156,11 +155,6 @@ export function OneSelectPage({
   ]);
 
   const isFormValid = Boolean(selectedValue);
-
-  // Wenn renderCondition definiert ist und false zurückgibt, zeige nichts an
-  if (renderCondition && !renderCondition(data)) {
-    return null;
-  }
 
   return (
     <OneSelectionContext.Provider value={{ selectedValue, selectValue }}>
