@@ -2,6 +2,7 @@
 
 import { type FieldErrors, useFormContext } from 'react-hook-form';
 import { Slider } from '../../base/slider.tsx';
+import { useEffect } from 'react';
 
 interface UniversalSliderFieldProps {
   name: string;
@@ -49,6 +50,13 @@ export function UniversalSliderField({
   } = useFormContext();
 
   const value = watch(name) ?? min;
+
+  useEffect(() => {
+    if (value === min) {
+      setValue(name, min, { shouldValidate: true });
+    }
+  }, [name, min, value, setValue]);
+
   const error = (errors as FieldErrors)?.[name]?.message as string | undefined;
 
   return (

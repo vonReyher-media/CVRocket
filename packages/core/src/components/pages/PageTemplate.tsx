@@ -60,7 +60,7 @@ export interface BaseTemplateProps {
    * Can be a boolean value or a function that returns a boolean.
    * If not provided, the page will always render.
    */
-  renderCondition?: boolean | (() => boolean);
+  renderCondition?: boolean | ((data: FormData) => boolean);
 }
 
 /**
@@ -102,7 +102,6 @@ const PageTemplate = ({
   className,
   isFormValid = true,
   animationDuration = 400,
-  renderCondition = true,
 }: PageTemplateProps) => {
   const {
     currentStep,
@@ -253,14 +252,6 @@ const PageTemplate = ({
     setShowAgbError(false);
     updateFormData({ [`agb_accepted_page_${currentStep}`]: checked });
   };
-
-  // Check if the page should be rendered
-  const shouldRender =
-    typeof renderCondition === 'function' ? renderCondition() : renderCondition;
-
-  if (!shouldRender) {
-    return null;
-  }
 
   return (
     <div className="overflow-hidden py-3">

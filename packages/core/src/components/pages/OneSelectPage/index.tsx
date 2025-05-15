@@ -5,16 +5,16 @@ import {
   useEffect,
   useState,
   Children,
-  cloneElement,
   isValidElement,
 } from 'react';
 
 import { useCVRocket } from '../../../providers/CVRocketProvider';
 import { cn } from '../../../utils/utils';
-import pageHeaders, { PageHeaderProps } from '../../base/pageHeaders';
+import { PageHeaderProps } from '../../base/pageHeaders';
 import PageHeader from '../../base/pageHeaders.tsx';
 import PageTemplate, { BaseTemplateProps } from '../PageTemplate';
 import { TypingText, type TypingTextProps } from '../../base/typing_alert';
+import type { FormData } from '../../../providers/CVRocketProvider';
 
 interface OneSelectionContextType {
   selectedValue: string | null;
@@ -40,6 +40,7 @@ interface OneSelectPageProps extends BaseTemplateProps {
   header?: PageHeaderProps;
   children: ReactNode;
   datakey: string;
+  renderCondition?: (data: FormData) => boolean;
 }
 
 /**
@@ -54,15 +55,10 @@ export function OneSelectPage({
   showAgb,
   agbInfo,
   className,
+  renderCondition,
 }: OneSelectPageProps) {
-  const {
-    updateFormData,
-    data,
-    currentStep,
-    totalSteps,
-    currentPageConfig,
-    setCurrentPageConfig,
-  } = useCVRocket();
+  const { updateFormData, data, currentStep, totalSteps, currentPageConfig } =
+    useCVRocket();
 
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [wasManuallySelected, setWasManuallySelected] = useState(false);
@@ -160,6 +156,11 @@ export function OneSelectPage({
   ]);
 
   const isFormValid = Boolean(selectedValue);
+
+  // Wenn renderCondition definiert ist und false zurückgibt, zeige nichts an
+  if (renderCondition && !renderCondition(data)) {
+    return null;
+  }
 
   return (
     <OneSelectionContext.Provider value={{ selectedValue, selectValue }}>

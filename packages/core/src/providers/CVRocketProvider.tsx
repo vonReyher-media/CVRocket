@@ -21,7 +21,7 @@ import { cn } from '../utils/utils.ts';
 import { CheckAvailableToastProvider } from './ToastProvider';
 
 /** Shape of form data object */
-type FormData = Record<string, unknown>;
+export type FormData = Record<string, unknown>;
 
 /** Configuration per page/step */
 export interface PageConfig {
@@ -100,7 +100,6 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   loadingComponent,
   protectFormNavigation = true,
   warnBeforeUnload = false,
-  enableThankYouPage = true,
   persistData = false,
   storageKey,
   fullScreenLayout = undefined,
@@ -130,13 +129,13 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   const subscribe = useCallback(
     <K extends keyof EventMap>(event: K, callback: EventCallback<K>) => {
       const listeners = eventListenersRef.current[event] ?? [];
-      // @ts-expect-error – type-safe via controlled usage in subscribe
+      // @ts-expect-error: The generic type K extends keyof EventMap but TypeScript cannot infer that EventCallback<K> is assignable to EventCallback<keyof EventMap>
       eventListenersRef.current[event] = [...listeners, callback];
 
       return () => {
         const current = eventListenersRef.current[event];
         if (!current) return;
-        // @ts-expect-error – type-safe via controlled usage in subscribe
+        // @ts-expect-error: The generic type K extends keyof EventMap but TypeScript cannot infer that EventCallback<K> is assignable to EventCallback<keyof EventMap>
         eventListenersRef.current[event] = current.filter(
           (cb): cb is EventCallback<K> => cb !== callback,
         );
@@ -145,21 +144,20 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     [],
   );
 
-  // Funktion zum Überprüfen, ob eine Seite gerendert werden soll
+  /** Überprüft die renderCondition-Callback jedes Steps */
   const shouldRenderPage = useCallback(
     (step: number) => {
       const child = Children.toArray(children)[step];
       if (!isValidElement(child)) return true;
-
       const renderCondition = child.props.renderCondition;
-      return typeof renderCondition === 'function'
-        ? renderCondition()
-        : (renderCondition ?? true);
+      if (typeof renderCondition === 'function') {
+        return renderCondition(data);
+      }
+      return renderCondition ?? true;
     },
-    [children],
+    [children, data],
   );
 
-  // Finde den ersten sichtbaren Schritt
   const findFirstVisibleStep = useCallback(() => {
     let step = 0;
     while (step < totalSteps - 1 && !shouldRenderPage(step)) {
@@ -170,34 +168,32 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
 
   useEffect(() => {
     if (!hasStarted) {
-      const firstVisibleStep = findFirstVisibleStep();
-      setCurrentStep(firstVisibleStep);
+      const firstVisible = findFirstVisibleStep();
+      setCurrentStep(firstVisible);
       setHasStarted(true);
       onStart?.();
-      onStepChange?.(firstVisibleStep);
+      onStepChange?.(firstVisible);
     }
   }, [hasStarted, findFirstVisibleStep, onStart, onStepChange]);
 
-  // Finde den nächsten sichtbaren Schritt
   const findNextVisibleStep = useCallback(
     (current: number) => {
-      let nextStep = current + 1;
-      while (nextStep < totalSteps - 1 && !shouldRenderPage(nextStep)) {
-        nextStep++;
+      let next = current + 1;
+      while (next < totalSteps - 1 && !shouldRenderPage(next)) {
+        next++;
       }
-      return nextStep;
+      return next;
     },
     [totalSteps, shouldRenderPage],
   );
 
-  // Finde den vorherigen sichtbaren Schritt
   const findPreviousVisibleStep = useCallback(
     (current: number) => {
-      let prevStep = current - 1;
-      while (prevStep > 0 && !shouldRenderPage(prevStep)) {
-        prevStep--;
+      let prev = current - 1;
+      while (prev > 0 && !shouldRenderPage(prev)) {
+        prev--;
       }
-      return prevStep;
+      return prev;
     },
     [shouldRenderPage],
   );
@@ -254,27 +250,24 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
   }, [data, onComplete, onError]);
 
   useEffect(() => {
-    const unsubscribeNext = subscribe('next_step', handleNextStep);
-    const unsubscribePrev = subscribe('previous_step', handlePreviousStep);
+    const unsubNext = subscribe('next_step', handleNextStep);
+    const unsubPrev = subscribe('previous_step', handlePreviousStep);
     return () => {
-      unsubscribeNext();
-      unsubscribePrev();
+      unsubNext();
+      unsubPrev();
     };
   }, [handleNextStep, handlePreviousStep, subscribe]);
 
   const updatePageConfig = useCallback((step: number, config: PageConfig) => {
-    console.log('CVRocketProvider - Updating page config for step:', step);
-    console.log('CVRocketProvider - New config:', config);
     setPageConfigs((prev) => {
-      const updated = [...prev];
-      updated[step] = config;
-      return updated;
+      const copy = [...prev];
+      copy[step] = config;
+      return copy;
     });
   }, []);
 
   const setCurrentPageConfig = useCallback(
     (config: PageConfig) => {
-      console.log('CVRocketProvider - Setting current page config:', config);
       updatePageConfig(currentStep, config);
     },
     [currentStep, updatePageConfig],
@@ -285,21 +278,18 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
     ? cloneElement(
         currentChild as React.ReactElement<{
           setPageConfig?: (config: PageConfig) => void;
-          renderCondition?: boolean | (() => boolean);
+          renderCondition?: boolean | ((data: FormData) => boolean);
+          data?: FormData;
         }>,
         {
-          setPageConfig: (config: PageConfig) =>
-            updatePageConfig(currentStep, config),
+          setPageConfig: setCurrentPageConfig,
+          data,
         },
       )
-    : currentChild;
+    : null;
 
-  // Check if the current page should be rendered
-  const shouldRenderCurrentPage =
-    isValidElement(currentChild) &&
-    (typeof currentChild.props.renderCondition === 'function'
-      ? currentChild.props.renderCondition()
-      : (currentChild.props.renderCondition ?? true));
+  // Nutze unified shouldRenderPage für das aktuelle Rendering
+  const shouldRenderCurrentPage = shouldRenderPage(currentStep);
 
   const contextValue: CVRocketContextValue = {
     currentStep,
@@ -344,13 +334,12 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
 
   useEffect(() => {
     if (!warnBeforeUnload) return;
-    const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+    const beforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = '';
     };
-    window.addEventListener('beforeunload', beforeUnloadHandler);
-    return () =>
-      window.removeEventListener('beforeunload', beforeUnloadHandler);
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
   }, [warnBeforeUnload]);
 
   const thankYouStep = Children.toArray(children)[totalSteps] ?? null;
@@ -368,10 +357,7 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
         >
           {fullScreenLayout ? (
             <div className="fixed inset-0 flex flex-col h-screen w-screen z-[9999] bg-background">
-              {/* Header immer sichtbar oben */}
               <FullScreenHeaderLayout {...fullScreenLayout} />
-
-              {/* Scrollbarer Content */}
               <div className="flex-grow overflow-y-auto pt-6 mx-auto px-5 container">
                 {isCompleted ? (
                   isSubmitting ? (
@@ -392,16 +378,11 @@ export const CVRocketProvider: React.FC<CVRocketProviderProps> = ({
                     ))
                   )
                 ) : (
-                  <>
-                    {/* Seiteninhalt */}
-                    <div className="shrink-0 py-5 bg-background z-10 ">
-                      {shouldRenderCurrentPage && enhancedChild}
-                    </div>
-                  </>
+                  <div className="shrink-0 py-5 bg-background z-10">
+                    {shouldRenderCurrentPage && enhancedChild}
+                  </div>
                 )}
               </div>
-
-              {/* Fixierte Button-Leiste unten */}
               {!isCompleted && (
                 <div className="shrink-0 w-full py-5 bg-background px-10">
                   <ButtonFooter

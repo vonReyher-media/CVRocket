@@ -1,5 +1,5 @@
 import { animate } from '@motionone/dom';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useCVRocket } from '../../providers/CVRocketProvider';
 import { Button } from '../base/button';
@@ -7,7 +7,6 @@ import { EnhancedSlider } from '../base/enhanced-slider';
 import PageHeader, { PageHeaderProps } from '../base/pageHeaders';
 import { PageTemplate } from './index';
 import { BaseTemplateProps } from './PageTemplate';
-import { PageTemplateProps } from './PageTemplate.tsx';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 
 interface AgbInfo {
@@ -28,13 +27,12 @@ interface SliderSelectPageProps extends Omit<BaseTemplateProps, 'agbInfo'> {
   showIncrementButtons?: boolean;
   incrementStep?: number;
   className?: string;
-  header?: Partial<PageHeaderProps>;
   agbInfo: AgbInfo;
   autoAdvance?: boolean;
   showAgb: boolean;
+  header?: PageHeaderProps;
   showBackButtonOnThisPage?: boolean;
   showNextButtonOnThisPage?: boolean;
-  pageHeader?: PageHeaderProps;
 }
 
 /**
@@ -57,7 +55,7 @@ export function SliderSelectPage({
   showNextButtonOnThisPage = true,
   autoAdvance = false,
   className,
-  pageHeader,
+  header,
 }: SliderSelectPageProps) {
   const { updateFormData, data, currentStep, totalSteps, currentPageConfig } =
     useCVRocket();
@@ -177,7 +175,7 @@ export function SliderSelectPage({
       showBackButtonOnThisPage={showBackButtonOnThisPage}
       isFormValid={isFormValid}
     >
-      {pageHeader && <PageHeader {...pageHeader} />}
+      {header && <PageHeader {...header} />}
       <div className="slider-page-content w-full">
         <div className={`w-full flex flex-col items-center ${className ?? ''}`}>
           {showValueLabel && typeof value === 'number' && (
