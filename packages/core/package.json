@@ -19,9 +19,10 @@
     "dist/style.css"
   ],
   "scripts": {
-    "build": "tsup && pnpm build:css && pnpm copy:readme",
+    "build": "tsup && pnpm build:css && pnpm copy:readme && pnpm copy:license",
     "build:css": "postcss src/index.css -o dist/style.css && postcss src/index.css -o dist/styles.min.css --env production",
     "copy:readme": "cpy README.md dist/",
+    "copy:license": "cpy LICENSE dist/",
     "prepublishOnly": "pnpm build",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
